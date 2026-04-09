@@ -1,18 +1,19 @@
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "~/components/ui/select";
+import { useLoaderData } from "react-router";
+import FacultySelector from "~/components/index/FacultySelector";
+import initPortal from "~/lib/portal/init";
+
+export async function loader() {
+  const init = initPortal();
+
+  return { init };
+}
 
 export default function Home() {
-  return <>
-    <Select>
-      <SelectTrigger className="w-[1800px]">
-        <SelectValue placeholder="Theme" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectItem value="light">Light</SelectItem>
-          <SelectItem value="dark">Dark</SelectItem>
-          <SelectItem value="system">System</SelectItem>
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-  </>;
+  const { init } = useLoaderData<typeof loader>();
+
+  return (
+    <main className="p-12"> 
+      <FacultySelector init={init} />
+    </main>
+  );
 }

@@ -1,8 +1,11 @@
+"use client";
+
 import * as React from "react"
 import { Select as SelectPrimitive } from "radix-ui"
 
 import { cn } from "~/lib/utils"
 import { ChevronDownIcon, CheckIcon, ChevronUpIcon } from "lucide-react"
+import { Spinner } from "./spinner";
 
 function Select({
   ...props
@@ -33,9 +36,11 @@ function SelectTrigger({
   className,
   size = "default",
   children,
+  loading = false,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
-  size?: "sm" | "default"
+  size?: "sm" | "default",
+  loading?: boolean
 }) {
   return (
     <SelectPrimitive.Trigger
@@ -49,7 +54,7 @@ function SelectTrigger({
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <ChevronDownIcon className="pointer-events-none size-4 text-muted-foreground" />
+        { loading ? <Spinner /> : <ChevronDownIcon className="pointer-events-none size-4 text-muted-foreground" /> }
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   )
