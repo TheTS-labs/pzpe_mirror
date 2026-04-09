@@ -1,40 +1,45 @@
 import { Suspense } from "react";
-import { Await } from "react-router";
+import { Await, useAsyncValue } from "react-router";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "~/components/ui/select";
 import type { InitPortal } from "~/lib/portal/init";
+import { Select as SelectPrimitive } from "radix-ui"
 
-export interface FacultySelectorProps {
-    init: Promise<InitPortal>
+export type FacultySelectorProps = {
+    init: Promise<InitPortal>,
+} & React.ComponentProps<typeof SelectPrimitive.Root>;
+
+function Trigger(props: { loading?: boolean }) {
+    return <SelectTrigger className="w-[180px]" {...props}>
+        <SelectValue placeholder="-- Faculty --" />
+    </SelectTrigger>
 }
 
 function Fallback() {
     return <Select disabled>
-        <SelectTrigger className="w-[180px]" loading>
-            <SelectValue placeholder="-- Faculty --" />
-        </SelectTrigger>
+        <Trigger loading />
     </Select>
 }
 
-function Resolved({ resolved }: { resolved: InitPortal }) {
-    return <Select>
-        <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="-- Faculty --" />
-        </SelectTrigger>
+function Resolved(props: FacultySelectorProps) {
+    const resolved = useAsyncValue() as InitPortal;
+
+    return <Select {...props}>
+        <Trigger />
         
         <SelectContent position="popper">
             <SelectGroup>
                 {resolved.faculties.map(faculty => (
-                    <SelectItem key={faculty[0]} value={faculty[0].toString()}>{faculty[1]}</SelectItem>)
-                )}
+                    <SelectItem key={faculty[0]} value={faculty[0].toString()}>{faculty[1]}</SelectItem>
+                ))}
             </SelectGroup>
         </SelectContent>
     </Select>;
 }
 
-export default function FacultySelector({ init }: FacultySelectorProps) {
+export default function FacultySelector(props: FacultySelectorProps) {
     return <Suspense fallback={<Fallback />}>
-        <Await resolve={init}>
-            {resolved => <Resolved resolved={resolved} />}
+        <Await resolve={props.init}>
+            <Resolved {...props} />
         </Await>
     </Suspense>
 }
