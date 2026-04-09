@@ -17,10 +17,11 @@ export async function action({ request }: ActionFunctionArgs) {
     const formData = await request.formData();
     const req = Object.fromEntries(formData) as Partial<Payload>;
 
-    if (!req.csrf_token || !req.meta_csrf_token || !req.faculty_id || !req.cookies) {
+    if (!req.csrf_token || !req.meta_csrf_token || !req.cookies || !req.faculty_id || !req.course) {
         return undefined;
     }
 
+    // TODO: Remove `as any`
     return getGroups(req as any);
 }
 
@@ -56,25 +57,20 @@ export default function Home() {
         );
     }, [init, faculty_id, course, group_id, student_id, fetcher]);
 
-    const onFacultyChange = (faculty_id: string) => {
-        (async () => {
-            setFacultyId(faculty_id);
-            await update({ faculty_id });
-        })();
-    };
-
-    const onCourseChange = (course: string) => {
-        (async () => {
-            setCourse(course);
-            await update({ course });
-        })();
-    };
+    const onValueChange = useCallback((set: (value: string) => void, key: keyof Payload) => {
+        return (value: string) => {
+            (async () => {
+                set(value);
+                await update({ [key]: value });
+            })();
+        };
+    }, []);
 
     return (
         <main className="p-12 flex flex-row gap-5"> 
-            <FacultySelector init={init} onValueChange={onFacultyChange} value={faculty_id} />
-            <CourseSelector onValueChange={onCourseChange} value={course} />
-            <GroupSelector groups={fetcher.data} loading={fetcher.state == "loading"} onValueChange={setGroupId} value={group_id} />
+            <FacultySelector init={init} onValueChange={onValueChange(setFacultyId, "faculty_id")} value={faculty_id} />
+            <CourseSelector onValueChange={onValueChange(setCourse, "course")} value={course} />
+            <GroupSelector groups={fetcher.data} loading={fetcher.state == "loading"} onValueChange={onValueChange(setGroupId, "group_id")} value={group_id} />
         </main>
     );
 }
