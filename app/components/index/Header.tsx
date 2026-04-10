@@ -1,31 +1,26 @@
-import { useEffect, useState } from "react";
-import pingSite from "~/lib/ping";
-import { PING_URL } from "~/lib/portal";
+import { Suspense } from "react";
+import { Await } from "react-router";
 
 export const COLOR_UNKNOWN = "text-neutral-500";
 export const COLOR_ONLINE = "text-green-500"
 export const COLOR_OFFLINE = "text-red-500"
 
-export default function Header() {
-    const [color, setColor] = useState<string>(COLOR_UNKNOWN);
+export interface HeaderProps {
+    head: Promise<boolean>
+}
 
-    useEffect(() => {
-        const checkStatus = () => {
-            pingSite(PING_URL)
-                .then(() => setColor(COLOR_ONLINE))
-                .catch(() => setColor(COLOR_OFFLINE));
-        };
-        
-        checkStatus();
+function Status({ head }: HeaderProps) {
+    return <Suspense fallback={<span className={COLOR_UNKNOWN}>PZPE</span>}>
+        <Await resolve={head} errorElement={<span className={COLOR_OFFLINE}>PZPE</span>}>
+            {resolved => <span className={resolved ? COLOR_ONLINE : COLOR_OFFLINE}>PZPE</span>}
+        </Await>
+    </Suspense>
+}
 
-        const interval = setInterval(checkStatus, 10_000);
-
-        return () => clearInterval(interval);
-    }, []);
-
+export default function Header({ head }: HeaderProps) {
     return <div className="flex flex-col items-center gap-2">
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance ">
-            <span className={color}>PZPE</span> Mirror
+            <Status head={head} /> Mirror
         </h1>
 
         <p className="text-center max-w-prose text-neutral-500">
