@@ -8,7 +8,7 @@ export type SelectorProps = {
 } & React.ComponentProps<typeof SelectPrimitive.Root>;
 
 function Trigger(props: Pick<SelectorProps, "loading" | "placeholder">) {
-    return <SelectTrigger className="w-[180px]" loading={props.loading}>
+    return <SelectTrigger className="grow" loading={props.loading}>
         <SelectValue placeholder={props.placeholder} />
     </SelectTrigger>
 }

@@ -11,6 +11,7 @@ export interface Lesson {
         end: string;
     };
     teacher: string;
+    classroom: string;
     notice: string;
 }
 
@@ -35,6 +36,7 @@ export default function parseSchedule(html: string) {
         },
 
         teacher: event.teachersName,
+        classroom: event.classroom.replace("ауд. ", ""),
         notice: sanitizeHtml(event.notice !== "" ? event.notice : event.info, {
             allowedTags: [ "br" ],
             allowedAttributes: { }

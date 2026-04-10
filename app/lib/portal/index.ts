@@ -1,6 +1,8 @@
 import * as cheerio from "cheerio";
 
-export const BASE_URL = "https://portal.zp.edu.ua/time-table/student?type=1";
+export const BASE_URL = "https://portal.zp.edu.ua";
+export const TIME_TABLE_URL = `${BASE_URL}/time-table/student?type=1`;
+export const PING_URL = `${BASE_URL}/icon.png`;
 
 export function getOptions($: cheerio.CheerioAPI, selector: string): [number, string][] {
     return $(selector).children("option").map((_, el) => {

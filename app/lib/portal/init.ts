@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import { BASE_URL, getOptions } from ".";
+import { TIME_TABLE_URL, getOptions } from ".";
 
 const FACULTY_SELECTOR = "#timetableform-facultyid";
 const META_CSRF_SELECTOR = "meta[name=\"csrf-token\"]";
@@ -24,7 +24,7 @@ export interface InitPortal {
 }
 
 export default async function initPortal(): Promise<InitPortal> {
-    const res = await fetch(BASE_URL);
+    const res = await fetch(TIME_TABLE_URL);
     const html = await res.text();
 
     const cookies = createCookieHeader(res.headers.getSetCookie());

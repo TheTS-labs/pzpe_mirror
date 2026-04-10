@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import { BASE_URL, getOptions } from ".";
+import { TIME_TABLE_URL, getOptions } from ".";
 import { type InitPortal } from "./init";
 import parseSchedule, { type Schedule as Inner } from "./parse-schedule";
 
@@ -42,7 +42,7 @@ function createRequest(req: Req): RequestInit {
 }
 
 export default async function getSchedule(req: Req): Promise<Schedule> {
-    const res = await fetch(BASE_URL, createRequest(req));
+    const res = await fetch(TIME_TABLE_URL, createRequest(req));
 
     const html = await res.text();
     const $ = cheerio.load(html);

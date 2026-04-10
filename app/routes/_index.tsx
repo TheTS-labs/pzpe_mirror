@@ -8,6 +8,9 @@ import { Spinner } from "~/components/ui/spinner";
 import HiddenInputs from "~/components/index/HiddenInputs";
 import { useCallback } from "react";
 import { Separator } from "~/components/ui/separator";
+import Header from "~/components/index/Header";
+import Footer from "~/components/index/Footer";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 
 export const loader = () => ({ init: initPortal() });
 
@@ -51,10 +54,10 @@ export default function Home() {
     const isLoadingStudents = isSubmitting && fetcher.formData?.has("groupId") && !fetcher.formData?.has("studentId");
     const isLoadingSchedule = isSubmitting && fetcher.formData?.has("groupId") && fetcher.formData?.has("studentId");
 
-    console.log(fetcher.data?.schedule);
+    return <main className="p-12 flex flex-col items-center gap-10">
+        <Header />
 
-    return <main className="p-12 flex flex-col gap-10">
-        <form className="flex flex-row gap-5 items-center justify-items-center" onChange={onFormChange}> 
+        <form className="flex flex-row gap-5 items-center justify-items-center max-w-prose w-full" onChange={onFormChange}> 
             <HiddenInputs init={init} />
             <FacultySelector init={init} />
             <CourseSelector />
@@ -80,15 +83,29 @@ export default function Home() {
             {fetcher.data?.schedule && Object.entries(fetcher.data?.schedule).map(([date, lessons]) => <>
                 <div>
                     <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">{date}</h1>
-                    <ul className="list-disc list-inside">
-                        {lessons.map(lesson => <li>
-                            <b>{lesson.time.start} - {lesson.time.end}</b>: {lesson.subject.full} <span className="text-muted-foreground">{`[${lesson.subject.type}]`}</span>
-                        </li>)}
-                    </ul>
+
+                    <Accordion type="multiple">
+                        {lessons.map(lesson => <AccordionItem value={lesson.time.start}>
+                            <AccordionTrigger>
+                                <b>{lesson.time.start} - {lesson.time.end}</b>: {lesson.subject.full} <span className="text-muted-foreground">[{lesson.subject.type}]</span>
+                            </AccordionTrigger>
+                            <AccordionContent className="pl-4">
+                                {lesson.notice.split("\n").map((line) => <p>{line}</p>)}
+                                <br />
+                                <p className="text-neutral-500 italic">
+                                    Teacher: <span className="font-bold">{lesson.teacher}</span>
+                                    <br />
+                                    Classroom: <span className="font-bold">{lesson.classroom}</span>
+                                </p>
+                            </AccordionContent>
+                        </AccordionItem>)}
+                    </Accordion>
                 </div>
 
                 <Separator />
             </>)}
         </div>
+
+        {!fetcher.data?.schedule && <Footer />}
     </main>;
 }

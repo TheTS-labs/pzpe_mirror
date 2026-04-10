@@ -9,7 +9,7 @@ export type FacultySelectorProps = {
 } & React.ComponentProps<typeof SelectPrimitive.Root>;
 
 function Trigger(props: { loading?: boolean }) {
-    return <SelectTrigger className="w-[180px]" {...props}>
+    return <SelectTrigger className="grow" {...props}>
         <SelectValue placeholder="-- Faculty --" />
     </SelectTrigger>
 }
