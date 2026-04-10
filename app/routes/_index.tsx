@@ -15,7 +15,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const formData = await request.formData();
     const req = Object.fromEntries(formData) as Partial<Req>;
 
-    if (!req.csrf_token || !req.meta_csrf_token || !req.cookies || !req.faculty_id || !req.course) {
+    if (!req.csrfToken || !req.metaCsrfToken || !req.cookies || !req.facultyId || !req.course) {
         return null;
     }
 
@@ -31,15 +31,15 @@ export default function Home() {
         const targetName = e.target.name;
         const formData = new FormData(form);
 
-        if (!formData.get("faculty_id") || !formData.get("course")) { 
+        if (!formData.get("facultyId") || !formData.get("course")) { 
             return; 
         }
 
-        if (targetName === "faculty_id" || targetName === "course") {
-            formData.delete("group_id");
-            formData.delete("student_id");
-        } else if (targetName === "group_id") {
-            formData.delete("student_id");
+        if (targetName === "facultyId" || targetName === "course") {
+            formData.delete("groupId");
+            formData.delete("studentId");
+        } else if (targetName === "groupId") {
+            formData.delete("studentId");
         }
 
         fetcher.submit(formData, { method: "post" });
@@ -47,9 +47,9 @@ export default function Home() {
 
     const isSubmitting = fetcher.state !== "idle";
 
-    const isLoadingGroups = isSubmitting && !fetcher.formData?.has("group_id");
-    const isLoadingStudents = isSubmitting && fetcher.formData?.has("group_id") && !fetcher.formData?.has("student_id");
-    const isLoadingSchedule = isSubmitting && fetcher.formData?.has("group_id") && fetcher.formData?.has("student_id");
+    const isLoadingGroups = isSubmitting && !fetcher.formData?.has("groupId");
+    const isLoadingStudents = isSubmitting && fetcher.formData?.has("groupId") && !fetcher.formData?.has("studentId");
+    const isLoadingSchedule = isSubmitting && fetcher.formData?.has("groupId") && fetcher.formData?.has("studentId");
 
     console.log(fetcher.data?.schedule);
 
@@ -60,13 +60,13 @@ export default function Home() {
             <CourseSelector />
             
             <Selector
-                name="group_id"
+                name="groupId"
                 data={fetcher.data?.groups}
                 loading={isLoadingGroups}
                 placeholder="--- Group ---"
             />
             <Selector
-                name="student_id"
+                name="studentId"
                 data={fetcher.data?.students}
                 loading={isLoadingStudents}
                 placeholder="--- Student ---"
@@ -82,7 +82,7 @@ export default function Home() {
                     <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">{date}</h1>
                     <ul className="list-disc list-inside">
                         {lessons.map(lesson => <li>
-                            <b>{lesson.date.start} - {lesson.date.end}</b>: {lesson.subject.full} <span className="text-muted-foreground">{`[${lesson.subject.type}]`}</span>
+                            <b>{lesson.time.start} - {lesson.time.end}</b>: {lesson.subject.full} <span className="text-muted-foreground">{`[${lesson.subject.type}]`}</span>
                         </li>)}
                     </ul>
                 </div>

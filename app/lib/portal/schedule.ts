@@ -1,17 +1,17 @@
 import * as cheerio from "cheerio";
-import { BASE_URL, get_options } from ".";
+import { BASE_URL, getOptions } from ".";
 import { type InitPortal } from "./init";
-import parseSchedule, { type Schedule as Inner } from "./parse_schedule";
+import parseSchedule, { type Schedule as Inner } from "./parse-schedule";
 
 const GROUP_SELECTOR = "#timetableform-groupid";
 const STUDENT_SELECTOR = "#timetableform-studentid";
 
 export type Req = {
     course: string,
-    faculty_id: string,
-    group_id?: string
-    student_id?: string
-} & Pick<InitPortal, "csrf_token" | "meta_csrf_token" | "cookies">;
+    facultyId: string,
+    groupId?: string
+    studentId?: string
+} & Pick<InitPortal, "csrfToken" | "metaCsrfToken" | "cookies">;
 
 export interface Schedule {
     groups: [number, string][],
@@ -21,37 +21,37 @@ export interface Schedule {
     schedule: Inner | undefined
 };
 
-function create_request(req: Req): RequestInit {
+function createRequest(req: Req): RequestInit {
     const body = new FormData();
 
-    body.set("_csrf-frontend", req.csrf_token);
-    body.set("TimeTableForm[facultyId]", req.faculty_id);
+    body.set("_csrf-frontend", req.csrfToken);
+    body.set("TimeTableForm[facultyId]", req.facultyId);
     body.set("TimeTableForm[course]", req.course);
 
-    if (req.group_id) { body.set("TimeTableForm[groupId]", req.group_id); }
-    if (req.student_id) { body.set("TimeTableForm[studentId]", req.student_id); }
+    if (req.groupId) { body.set("TimeTableForm[groupId]", req.groupId); }
+    if (req.studentId) { body.set("TimeTableForm[studentId]", req.studentId); }
 
     return {
         method: "POST",
         body,
         headers: {
-            "X-CSRF-Token": req.meta_csrf_token,
+            "X-CSRF-Token": req.metaCsrfToken,
             "Cookie": req.cookies,
         }
     };
 }
 
 export default async function getSchedule(req: Req): Promise<Schedule> {
-    const res = await fetch(BASE_URL, create_request(req));
+    const res = await fetch(BASE_URL, createRequest(req));
 
     const html = await res.text();
     const $ = cheerio.load(html);
 
-    const schedule = req.group_id && req.student_id ? parseSchedule(html) : undefined;
+    const schedule = req.groupId && req.studentId ? parseSchedule(html) : undefined;
 
     return {
-        groups: get_options($, GROUP_SELECTOR),
-        students: get_options($, STUDENT_SELECTOR),
+        groups: getOptions($, GROUP_SELECTOR),
+        students: getOptions($, STUDENT_SELECTOR),
         schedule,
     };
 }

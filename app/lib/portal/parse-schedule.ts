@@ -6,7 +6,7 @@ export interface Lesson {
         short: string;
         type: string;
     };
-    date: {
+    time: {
         start: string;
         end: string;
     };
@@ -21,7 +21,7 @@ export interface Schedule {
 export default function parseSchedule(html: string) {
     const events = getEventsVariable(html);
 
-    const cleaned = Object.values(events).map((event: any) => ({
+    const cleaned = Object.values(events).map(event => ({
         subject: {
             full: event.disciplineFullName.trim(),
             short: event.disciplineShortName.trim(),
@@ -42,19 +42,48 @@ export default function parseSchedule(html: string) {
     }));
 
     return cleaned.reduce((acc, item) => {
-        const groupKey = item.date.date;
-        if (!acc[groupKey]) {
-            acc[groupKey] = [];
+        const { date: { date, ...time }, ...props } = item;
+
+        if (!acc[date]) {
+            acc[date] = [];
         }
 
-        delete item.date.date;
-        acc[groupKey].push(item);
+        acc[date].push({ ...props, time });
 
         return acc;
     }, {} as Schedule);
 }
 
-function getEventsVariable(html: string) {
+interface Event {
+    r1: number;
+    rz14: number;
+    rz15: number;
+    disciplineId: number;
+    educationDisciplineId: number;
+    disciplineFullName: string;
+    disciplineShortName: string;
+    classroom: string;
+    timeStart: string;
+    timeEnd: string;
+    teachersName: string;
+    teachersNameFull: string;
+    teacherP1: number;
+    type: string;
+    typeStr: string;
+    dateUpdated: string;
+    nonstandardTime: boolean;
+    groups: string;
+    chairName: string;
+    extraText: boolean;
+    lessonYear: number;
+    semester: number;
+    notice: string;
+    info: string;
+    date: string;
+    text: string;
+}
+
+function getEventsVariable(html: string): { [key: string]: Event } {
     const regex = /var events = ({[\s\S]*?});\s*(?:jQuery|(?:\/\/)|$)/;
     const match = html.match(regex);
 

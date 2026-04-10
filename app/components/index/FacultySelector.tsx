@@ -23,7 +23,7 @@ function Fallback() {
 function Resolved(props: FacultySelectorProps) {
     const resolved = useAsyncValue() as InitPortal;
 
-    return <Select {...props} name="faculty_id">
+    return <Select {...props} name="facultyId">
         <Trigger />
         
         <SelectContent position="popper">

@@ -1,23 +1,23 @@
 import * as cheerio from "cheerio";
-import { BASE_URL, get_options } from ".";
+import { BASE_URL, getOptions } from ".";
 
 const FACULTY_SELECTOR = "#timetableform-facultyid";
-const META_CSRF_SELECTOR = 'meta[name="csrf-token"]';
-const INPUT_CSRF_SELECTOR = 'input[name="_csrf-frontend"]';
+const META_CSRF_SELECTOR = "meta[name=\"csrf-token\"]";
+const INPUT_CSRF_SELECTOR = "input[name=\"_csrf-frontend\"]";
 
-function createCookieHeader(set_cookie: string[]) {
-    if (!set_cookie || set_cookie.length === 0) {
+function createCookieHeader(setCookie: string[]) {
+    if (!setCookie || setCookie.length === 0) {
         return "";
     }
 
-    return set_cookie
-        .map(cookie => cookie.split(';')[0].trim())
-        .join('; ');
+    return setCookie
+        .map(cookie => cookie.split(";")[0].trim())
+        .join("; ");
 }
 
 export interface InitPortal {
-    csrf_token: string,
-    meta_csrf_token: string,
+    csrfToken: string,
+    metaCsrfToken: string,
     cookies: string,
 
     faculties: [number, string][],
@@ -30,18 +30,18 @@ export default async function initPortal(): Promise<InitPortal> {
     const cookies = createCookieHeader(res.headers.getSetCookie());
     const $ = cheerio.load(html);
 
-    const meta_csrf_token = $(META_CSRF_SELECTOR).attr("content");
-    const csrf_token = $(INPUT_CSRF_SELECTOR).val() as string | undefined;
+    const metaCsrfToken = $(META_CSRF_SELECTOR).attr("content");
+    const csrfToken = $(INPUT_CSRF_SELECTOR).val() as string | undefined;
 
-    if (!meta_csrf_token || !csrf_token) {
+    if (!metaCsrfToken || !csrfToken) {
         throw new Error("Could not init Portal: No meta CSRF token or input CSRF token");
     }
 
     return {
-        csrf_token,
-        meta_csrf_token,
+        csrfToken,
+        metaCsrfToken,
         cookies,
 
-        faculties: get_options($, FACULTY_SELECTOR),
+        faculties: getOptions($, FACULTY_SELECTOR),
     };
 }

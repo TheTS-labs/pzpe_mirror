@@ -10,8 +10,8 @@ function Resolved() {
     const resolved = useAsyncValue() as InitPortal;
 
     return <>
-        <input type="hidden" name="csrf_token" value={resolved.csrf_token} />
-        <input type="hidden" name="meta_csrf_token" value={resolved.meta_csrf_token} />
+        <input type="hidden" name="csrfToken" value={resolved.csrfToken} />
+        <input type="hidden" name="metaCsrfToken" value={resolved.metaCsrfToken} />
         <input type="hidden" name="cookies" value={resolved.cookies} />
     </>;
 }

@@ -2,7 +2,7 @@ import * as cheerio from "cheerio";
 
 export const BASE_URL = "https://portal.zp.edu.ua/time-table/student?type=1";
 
-export function get_options($: cheerio.CheerioAPI, selector: string): [number, string][] {
+export function getOptions($: cheerio.CheerioAPI, selector: string): [number, string][] {
     return $(selector).children("option").map((_, el) => {
         const element = $(el);
 
@@ -13,6 +13,6 @@ export function get_options($: cheerio.CheerioAPI, selector: string): [number, s
 
         return [[ id, name ]]; 
     })
-    .get()
-    .filter(el => el !== null) as [number, string][]; 
+        .get()
+        .filter(el => el !== null) as [number, string][]; 
 }
