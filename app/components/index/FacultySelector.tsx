@@ -23,7 +23,7 @@ function Fallback() {
 function Resolved(props: FacultySelectorProps) {
     const resolved = useAsyncValue() as InitPortal;
 
-    return <Select {...props}>
+    return <Select {...props} name="faculty_id">
         <Trigger />
         
         <SelectContent position="popper">
@@ -36,9 +36,21 @@ function Resolved(props: FacultySelectorProps) {
     </Select>;
 }
 
+function Rejected() {
+    return <div className="flex flex-col gap-2">
+        <Select disabled>
+            <Trigger />
+        </Select>
+
+        <p className="text-[0.8rem] font-medium text-destructive">
+            Failed to load faculties
+        </p>
+    </div>;
+}
+
 export default function FacultySelector(props: FacultySelectorProps) {
     return <Suspense fallback={<Fallback />}>
-        <Await resolve={props.init}>
+        <Await resolve={props.init} errorElement={<Rejected />}>
             <Resolved {...props} />
         </Await>
     </Suspense>

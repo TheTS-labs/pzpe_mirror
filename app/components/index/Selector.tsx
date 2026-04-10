@@ -7,27 +7,27 @@ export type SelectorProps = {
     loading?: boolean,
 } & React.ComponentProps<typeof SelectPrimitive.Root>;
 
-function Trigger(props: SelectorProps) {
+function Trigger(props: Pick<SelectorProps, "loading" | "placeholder">) {
     return <SelectTrigger className="w-[180px]" loading={props.loading}>
         <SelectValue placeholder={props.placeholder} />
     </SelectTrigger>
 }
 
-function Fallback(props: SelectorProps) {
+function Fallback(props: Pick<SelectorProps, "loading" | "placeholder">) {
     return <Select disabled>
         <Trigger {...props} />
     </Select>
 }
 
-export default function Selector(props: SelectorProps) {
-    if (!props.data || props.data.length == 0 || props.loading) { return <Fallback {...props} /> }
+export default function Selector({ placeholder, loading, data, ...props }: SelectorProps) {
+    if (!data || data.length == 0 || loading) { return <Fallback placeholder={placeholder} loading={loading} /> }
 
     return <Select {...props}>
-        <Trigger {...props} />
+        <Trigger loading={loading} placeholder={placeholder} />
         
         <SelectContent position="popper">
             <SelectGroup>
-                {props.data.map(entry => (
+                {data.map(entry => (
                     <SelectItem key={entry[0]} value={entry[0].toString()}>{entry[1]}</SelectItem>
                 ))}
             </SelectGroup>

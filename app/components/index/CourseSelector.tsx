@@ -4,7 +4,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectI
 export type CourseSelectorProps = React.ComponentProps<typeof SelectPrimitive.Root>;
 
 export default function CourseSelector(props: CourseSelectorProps) {
-    return <Select {...props}>
+    return <Select {...props} name="course">
         <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="-- Course --" />
         </SelectTrigger>
