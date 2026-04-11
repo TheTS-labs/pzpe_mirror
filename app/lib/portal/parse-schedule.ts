@@ -1,14 +1,14 @@
 import sanitizeHtml from "sanitize-html";
 
-export interface Lesson {
+export interface Lesson<T = string> {
     subject: {
         full: string;
         short: string;
         type: string;
     };
     time: {
-        start: string;
-        end: string;
+        start: T;
+        end: T;
     };
     teacher: string;
     classroom: string;
@@ -86,7 +86,7 @@ interface Event {
 }
 
 function getEventsVariable(html: string): { [key: string]: Event } {
-    const regex = /var events = ({[\s\S]*?});\s*(?:jQuery|(?:\/\/)|$)/;
+    const regex = /var events = ({[\s\S]*?});/;
     const match = html.match(regex);
 
     if (!match) {
