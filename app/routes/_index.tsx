@@ -6,10 +6,16 @@ import Footer from "~/components/index/Footer";
 import Form from "~/components/index/Form";
 import Schedule from "~/components/index/Schedule";
 import headPortal from "~/lib/portal/head";
+import type { LoaderFunctionArgs } from "react-router";
 
-export const loader = () => ({ init: initPortal(), head: headPortal() });
+export async function loader({ context }: LoaderFunctionArgs) { 
+    const env: Env = context.cloudflare.env;
+    return {init: initPortal(env.PZPE_CACHE), head: headPortal() };
+};
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request, context }: ActionFunctionArgs) {
+    const env: Env = context.cloudflare.env;
+
     const formData = await request.formData();
     const req = Object.fromEntries(formData) as Partial<Req>;
 
@@ -17,7 +23,7 @@ export async function action({ request }: ActionFunctionArgs) {
         return null;
     }
 
-    return getSchedule(req as Req);
+    return getSchedule(req as Req, env.PZPE_CACHE);
 }
 
 export default function Home() {

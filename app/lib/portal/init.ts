@@ -5,6 +5,9 @@ const FACULTY_SELECTOR = "#timetableform-facultyid";
 const META_CSRF_SELECTOR = "meta[name=\"csrf-token\"]";
 const INPUT_CSRF_SELECTOR = "input[name=\"_csrf-frontend\"]";
 
+const CACHE_KEY = "init";
+const CACHE_TTL_SECS = 60 * 60 * 24 * 7;
+
 function createCookieHeader(setCookie: string[]) {
     if (!setCookie || setCookie.length === 0) {
         return "";
@@ -23,7 +26,10 @@ export interface InitPortal {
     faculties: [number, string][],
 }
 
-export default async function initPortal(): Promise<InitPortal> {
+export default async function initPortal(kv: KVNamespace): Promise<InitPortal> {
+    const cache = await kv.get(CACHE_KEY);
+    if (cache) { return JSON.parse(cache); }
+
     const res = await fetch(TIME_TABLE_URL);
     const html = await res.text();
 
@@ -37,11 +43,17 @@ export default async function initPortal(): Promise<InitPortal> {
         throw new Error("Could not init Portal: No meta CSRF token or input CSRF token");
     }
 
-    return {
+    const result = {
         csrfToken,
         metaCsrfToken,
         cookies,
 
         faculties: getOptions($, FACULTY_SELECTOR),
     };
+
+    await kv.put(CACHE_KEY, JSON.stringify(result), {
+        expirationTtl: CACHE_TTL_SECS,
+    });
+
+    return result;
 }

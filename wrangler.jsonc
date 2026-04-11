@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "pzpe-mirror",
+  "compatibility_date": "2026-04-11",
+  "observability": {
+    "enabled": true
+  },
+  "main": "./workers/app.ts",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "PZPE_CACHE",
+      "id": "1c84950384cb40c89fa35c9677177085"
+    }
+  ]
+}
