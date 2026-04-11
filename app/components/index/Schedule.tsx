@@ -53,12 +53,21 @@ export default function Schedule(props: ScheduleProps) {
 
                 <Accordion type="multiple">
                     {lessons.map((lesson, i) => <AccordionItem value={i.toString()} key={i}>
-                        <AccordionTrigger className={now?.isBetween(lesson.time.start, lesson.time.end, null, "[]") ? "text-blue-400" : ""}>
+                        <AccordionTrigger
+                            className={
+                                now?.isBetween(
+                                    lesson.time.start.subtract(10, "minutes"),
+                                    lesson.time.end.add(10, "minutes"),
+                                    null,
+                                    "[]"
+                                ) ? "text-blue-400" : ""
+                            }
+                        >
                             <div className="pr-4">
                                 <b className="whitespace-nowrap">
-                                    {lesson.time.start.subtract(10, "minutes").format("HH:mm")}
+                                    {lesson.time.start.format("HH:mm")}
                                     {" - "}
-                                    {lesson.time.end.add(10, "minutes").format("HH:mm")}
+                                    {lesson.time.end.format("HH:mm")}
                                 </b>
                                 {`: ${lesson.subject.full} `}
                                 <span className="text-muted-foreground whitespace-nowrap">
