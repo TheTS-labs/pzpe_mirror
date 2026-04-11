@@ -34,7 +34,8 @@ export default defineConfig([
                     allowExportNames: [
                         "loader",
                         "action",
-                        "links"
+                        "links",
+                        "meta"
                     ]
                 },
             ],

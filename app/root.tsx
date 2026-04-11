@@ -5,6 +5,7 @@ import {
     Outlet,
     Scripts,
     ScrollRestoration,
+    type MetaFunction,
 } from "react-router";
 
 import type { Route } from "./+types/root";
@@ -23,6 +24,13 @@ export const links: Route.LinksFunction = () => [
         href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
     },
 ];
+
+export const meta: MetaFunction = () => {
+    return [
+        { title: "PZPE Mirror" },
+        { name: "description", content: "A fast, reliable, and open-source interface for Portal. Enjoy a beautiful modern UI and request caching that eliminates downtime forever" },
+    ];
+};
 
 export function Layout({ children }: { children: React.ReactNode }) {
     return (
