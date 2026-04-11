@@ -3,7 +3,7 @@
   "name": "pzpe-mirror",
   "compatibility_date": "2026-04-11",
   "observability": {
-    "enabled": true
+    "enabled": false
   },
   "main": "./workers/app.ts",
   "compatibility_flags": [
