@@ -87,7 +87,6 @@ export default function Form(props: FormProps) {
             defaultValue={searchParams.get("studentId") || undefined}
         />
 
-        {/* TODO: Inconsistent size */}
-        {isLoadingSchedule && <Spinner />}
+        {isLoadingSchedule && <Spinner className="flex-none size-6" />}
     </form>;
 }
