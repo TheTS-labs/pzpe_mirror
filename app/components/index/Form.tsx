@@ -64,7 +64,7 @@ export default function Form(props: FormProps) {
     const isLoadingSchedule = isSubmitting && formData?.has("groupId") && formData?.has("studentId");
 
     return <form
-        className="flex flex-row gap-5 items-center justify-items-center max-w-prose w-full"
+        className="flex flex-col md:flex-row gap-5 items-center justify-items-center md:max-w-prose w-full"
         onChange={onFormChange}
     >
         <HiddenInputs init={props.init} />

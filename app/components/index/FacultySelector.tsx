@@ -9,7 +9,7 @@ export type FacultySelectorProps = {
 } & React.ComponentProps<typeof SelectPrimitive.Root>;
 
 function Trigger(props: { loading?: boolean }) {
-    return <SelectTrigger className="grow" {...props}>
+    return <SelectTrigger className="w-full md:grow" {...props}>
         <SelectValue placeholder="-- Faculty --" />
     </SelectTrigger>
 }
@@ -26,10 +26,19 @@ function Resolved(props: FacultySelectorProps) {
     return <Select {...props} name="facultyId">
         <Trigger />
         
-        <SelectContent position="popper">
+        <SelectContent 
+            position="popper" 
+            className="w-[var(--radix-select-trigger-width)] min-w-[200px] max-h-[300px]"
+        >
             <SelectGroup>
                 {resolved.faculties.map(faculty => (
-                    <SelectItem key={faculty[0]} value={faculty[0].toString()}>{faculty[1]}</SelectItem>
+                    <SelectItem 
+                        key={faculty[0]} 
+                        value={faculty[0].toString()}
+                        className="whitespace-normal leading-tight py-2"
+                    >
+                        {faculty[1]}
+                    </SelectItem>
                 ))}
             </SelectGroup>
         </SelectContent>

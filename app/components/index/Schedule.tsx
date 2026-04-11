@@ -17,8 +17,14 @@ export default function Schedule(props: ScheduleProps) {
 
                 <Accordion type="multiple">
                     {lessons.map(lesson => <AccordionItem value={lesson.time.start} key={lesson.time.start}>
-                        <AccordionTrigger>
-                            <b>{lesson.time.start} - {lesson.time.end}</b>: {lesson.subject.full} <span className="text-muted-foreground">[{lesson.subject.type}]</span>
+                        <AccordionTrigger className="text-left">
+                            <div className="pr-4">
+                                <b className="whitespace-nowrap">{lesson.time.start} - {lesson.time.end}</b>
+                                : {lesson.subject.full}{" "}
+                                <span className="text-muted-foreground whitespace-nowrap">
+                                    [{lesson.subject.type}]
+                                </span>
+                            </div>
                         </AccordionTrigger>
                         <AccordionContent className="pl-4">
                             {lesson.notice.trim().split("\n").map((line, i) => <p key={i}>

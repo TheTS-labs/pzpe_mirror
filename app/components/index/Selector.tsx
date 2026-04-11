@@ -8,7 +8,7 @@ export type SelectorProps = {
 } & React.ComponentProps<typeof SelectPrimitive.Root>;
 
 function Trigger(props: Pick<SelectorProps, "loading" | "placeholder">) {
-    return <SelectTrigger className="grow" loading={props.loading}>
+    return <SelectTrigger className="w-full md:grow" loading={props.loading}>
         <SelectValue placeholder={props.placeholder} />
     </SelectTrigger>
 }
@@ -25,10 +25,19 @@ export default function Selector({ placeholder, loading, data, ...props }: Selec
     return <Select {...props}>
         <Trigger loading={loading} placeholder={placeholder} />
         
-        <SelectContent position="popper">
+        <SelectContent
+            position="popper"
+            className="w-[var(--radix-select-trigger-width)] min-w-[200px] max-h-[300px]"
+        >
             <SelectGroup>
                 {data.map(entry => (
-                    <SelectItem key={entry[0]} value={entry[0].toString()}>{entry[1]}</SelectItem>
+                    <SelectItem
+                        key={entry[0]}
+                        value={entry[0].toString()}
+                        className="whitespace-normal leading-tight py-2"
+                    >
+                        {entry[1]}
+                    </SelectItem>
                 ))}
             </SelectGroup>
         </SelectContent>

@@ -5,7 +5,7 @@ export type CourseSelectorProps = React.ComponentProps<typeof SelectPrimitive.Ro
 
 export default function CourseSelector(props: CourseSelectorProps) {
     return <Select {...props} name="course">
-        <SelectTrigger className="grow">
+        <SelectTrigger className="w-full md:grow">
             <SelectValue placeholder="-- Course --" />
         </SelectTrigger>
         
