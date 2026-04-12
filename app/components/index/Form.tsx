@@ -78,7 +78,10 @@ export default function Form(props: FormProps) {
             <FacultySelector faculties={props.faculties} defaultValue={searchParams.get("facultyId") || undefined} />
             <CourseSelector defaultValue={searchParams.get("course") || undefined} />
                 
-            <Suspense fallback={renderSelectors()}>
+            <Suspense fallback={<>
+                {renderSelectors()}
+                <Spinner className="flex-none size-6" />
+            </>}>
                 <Await resolve={props.bootstrap}>
                     {resolved => renderSelectors(resolved)}
                 </Await>
