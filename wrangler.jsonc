@@ -18,7 +18,7 @@
   "workers_dev": false,
   "routes": [
     {
-      "pattern": "pzpe.thets.cc/*",
+      "pattern": "pzpe.thets.cc",
       "custom_domain": true
     }
   ]
