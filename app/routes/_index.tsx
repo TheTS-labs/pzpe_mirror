@@ -3,7 +3,7 @@ import getCascading, { type CascadingRequest } from "~/lib/portal/get-cascading"
 import Header from "~/components/index/Header";
 import Footer from "~/components/index/Footer";
 import Form from "~/components/index/Form";
-import Schedule from "~/components/index/Schedule";
+import Schedule from "~/components/index/schedule/Schedule";
 import headPortal from "~/lib/portal/head";
 import type { LoaderFunctionArgs } from "react-router";
 import getInit from "~/lib/portal/get-init";

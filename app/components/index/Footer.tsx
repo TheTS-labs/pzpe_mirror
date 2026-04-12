@@ -15,7 +15,7 @@ export default function Footer() {
             <AccordionTrigger>What do the "PZPE" colors mean?</AccordionTrigger>
             <AccordionContent className="pl-4">
                 <ul className="list-disc list-inside space-y-1">
-                    <li><span className={`font-semibold ${COLOR_ONLINE}`}>PZPE</span>: <a href={BASE_URL}>{BASE_URL}</a> is online and operational</li>
+                    <li><span className={`font-semibold ${COLOR_ONLINE}`}>PZPE</span>: <a className="text-blue-400 underline" href={BASE_URL}>{BASE_URL}</a> is online and operational</li>
                     <li><span className={`font-semibold ${COLOR_OFFLINE}`}>PZPE</span>: The portal is offline or unresponsive</li>
                     <li><span className={`font-semibold ${COLOR_UNKNOWN}`}>PZPE</span>: Checking connection status...</li>
                 </ul>
@@ -25,7 +25,7 @@ export default function Footer() {
         <AccordionItem value="item-2">
             <AccordionTrigger>Is this project open source?</AccordionTrigger>
             <AccordionContent className="pl-4">
-                    Yes! The source code is available on <a href="https://github.com/TheTS-labs/pzpe_mirror" target="_blank" rel="noopener noreferrer">GitHub</a>. Feel free to drop a star, report bugs, or propose changes.
+                    Yes! The source code is available on <a className="text-blue-400 underline" href="https://github.com/TheTS-labs/pzpe_mirror" target="_blank" rel="noopener noreferrer">GitHub</a>. Feel free to drop a star, report bugs, or propose changes.
             </AccordionContent>
         </AccordionItem>
 
@@ -48,7 +48,7 @@ export default function Footer() {
         <AccordionItem value="item-4">
             <AccordionTrigger>omg ur so goated its actually insane. Do you accept donations by any chance?</AccordionTrigger>
             <AccordionContent className="pl-4">
-                    Of course!! Donations are always welcome: <a href="https://send.monobank.ua/4vQFjAuSmJ" target="_blank" rel="noopener noreferrer">Monobank</a>
+                    Of course!! Donations are always welcome: <a className="text-blue-400 underline" href="https://send.monobank.ua/4vQFjAuSmJ" target="_blank" rel="noopener noreferrer">Monobank</a>
             </AccordionContent>
         </AccordionItem>
 

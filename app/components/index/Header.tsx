@@ -19,7 +19,7 @@ function Status({ head }: HeaderProps) {
 
 export default function Header({ head }: HeaderProps) {
     return <div className="flex flex-col items-center gap-2">
-        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance ">
+        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance text-center">
             <Status head={head} /> Mirror
         </h1>
 
