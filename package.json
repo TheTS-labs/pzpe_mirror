@@ -1,5 +1,6 @@
 {
   "name": "pzpe_mirror",
+  "license": "MIT",
   "private": true,
   "type": "module",
   "scripts": {
