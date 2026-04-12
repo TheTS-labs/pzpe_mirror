@@ -1,87 +1,58 @@
-# Welcome to React Router!
+# PZPE Mirror
 
-A modern, production-ready template for building full-stack React applications using React Router.
-
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+**PZPE Mirror** is a fast, reliable, and open-source web interface for the [Zaporizhzhia National Polytechnic University Portal](https://portal.zp.edu.ua). It provides a modern user experience and implements aggressive request caching to ensure the schedule remains accessible even during portal downtime.
 
 ## Features
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+* **Modern UI**: Built with a clean, responsive interface using Tailwind CSS and Shadcn components.
+* **Downtime Protection**: Utilizes Cloudflare KV for request caching, mitigating issues when the upstream portal is unavailable.
+* **Edge Powered**: Optimized for deployment on Cloudflare Workers for global low-latency performance.
+
+## Tech Stack
+
+* **Framework**: [React Router 7](https://reactrouter.com/) (formerly Remix).
+* **Runtime**: [Cloudflare Workers](https://workers.cloudflare.com/).
+* **Styling**: [Tailwind CSS](https://tailwindcss.com/) & [Shadcn UI](https://ui.shadcn.com/).
+* **Data Processing**: [Cheerio](https://cheerio.js.org/) for DOM parsing and [Day.js](https://day.js.org/) for time management.
+* **Storage**: [Cloudflare KV](https://developers.cloudflare.com/kv/) for caching schedule data.
 
 ## Getting Started
 
+### Prerequisites
+
+* Node.js (latest LTS recommended)
+* npm or yarn
+* A Cloudflare account (for deployment)
+
 ### Installation
 
-Install the dependencies:
+1. **Clone the repository:**
 
-```bash
-npm install
-```
+    ```bash
+    git clone https://github.com/TheTS-labs/pzpe_mirror.git
+    cd pzpe_mirror
+    ```
+
+2. **Install dependencies:**
+
+    ```bash
+    npm install
+    ```
 
 ### Development
 
-Start the development server with HMR:
+Run the development server locally:
 
 ```bash
 npm run dev
 ```
 
-Your application will be available at `http://localhost:5173`.
+### Deployment
 
-## Building for Production
-
-Create a production build:
+Deploy the project to Cloudflare Workers:
 
 ```bash
-npm run build
+npm run deploy
 ```
 
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
+*Note: Ensure your `wrangler.jsonc` is configured with the correct KV namespace ID and custom domain settings*.
