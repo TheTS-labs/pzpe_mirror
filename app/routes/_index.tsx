@@ -1,40 +1,57 @@
-import { useFetcher, useLoaderData, type ActionFunctionArgs } from "react-router";
-import getSchedule, { type Req } from "~/lib/portal/schedule";
-import initPortal from "~/lib/portal/init";
+import { Await, useFetcher, useLoaderData, type ActionFunctionArgs } from "react-router";
+import getCascading, { type CascadingRequest } from "~/lib/portal/get-cascading";
 import Header from "~/components/index/Header";
 import Footer from "~/components/index/Footer";
 import Form from "~/components/index/Form";
 import Schedule from "~/components/index/Schedule";
 import headPortal from "~/lib/portal/head";
 import type { LoaderFunctionArgs } from "react-router";
+import getInit from "~/lib/portal/get-init";
+import { Suspense } from "react";
 
-export async function loader({ context }: LoaderFunctionArgs) { 
+export async function loader({ context, request }: LoaderFunctionArgs) { 
     const env: Env = context.cloudflare.env;
-    return {init: initPortal(env.PZPE_CACHE), head: headPortal() };
+    const ctx: ExecutionContext = context.cloudflare.ctx;
+
+    const params = new URL(request.url).searchParams;
+    const req = Object.fromEntries(params) as Partial<CascadingRequest>;
+    const runBootstrap = !!req["facultyId"] && !!req["course"];
+
+    return {
+        faculties: getInit(env.PZPE_CACHE, ctx),
+        head: headPortal(),
+        bootstrap: runBootstrap ? getCascading(req as CascadingRequest, env.PZPE_CACHE, ctx) : undefined,
+    };
 };
 
 export async function action({ request, context }: ActionFunctionArgs) {
     const env: Env = context.cloudflare.env;
+    const ctx: ExecutionContext = context.cloudflare.ctx;
 
     const formData = await request.formData();
-    const req = Object.fromEntries(formData) as Partial<Req>;
+    const req = Object.fromEntries(formData) as Partial<CascadingRequest>;
 
-    if (!req.csrfToken || !req.metaCsrfToken || !req.cookies || !req.facultyId || !req.course) {
+    if (!req.facultyId || !req.course) {
         return null;
     }
 
-    return getSchedule(req as Req, env.PZPE_CACHE);
+    return getCascading(req as CascadingRequest, env.PZPE_CACHE, ctx);
 }
 
 export default function Home() {
-    const { init, head } = useLoaderData<typeof loader>();
+    const { faculties, head, bootstrap } = useLoaderData<typeof loader>();
     const fetcher = useFetcher<typeof action>();
 
     return <main className="p-12 flex flex-col items-center gap-10">
         <Header head={head} />
 
-        <Form init={init} fetcher={fetcher} />
-        <Schedule schedule={fetcher.data?.schedule} />
+        <Form faculties={faculties} fetcher={fetcher} bootstrap={bootstrap} />
+
+        <Suspense fallback={<></>}>
+            <Await resolve={bootstrap}>
+                {resolved => <Schedule schedule={fetcher.data?.schedule || resolved?.schedule} />}
+            </Await>
+        </Suspense>
 
         {!fetcher.data?.schedule && <Footer />}
     </main>;

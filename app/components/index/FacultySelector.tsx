@@ -1,11 +1,11 @@
 import { Suspense } from "react";
 import { Await, useAsyncValue } from "react-router";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "~/components/ui/select";
-import type { InitPortal } from "~/lib/portal/init";
+import type { Faculties } from "~/lib/portal/get-init";
 import { Select as SelectPrimitive } from "radix-ui"
 
 export type FacultySelectorProps = {
-    init: Promise<InitPortal>,
+    faculties: Promise<Faculties>,
 } & React.ComponentProps<typeof SelectPrimitive.Root>;
 
 function Trigger(props: { loading?: boolean }) {
@@ -21,7 +21,7 @@ function Fallback() {
 }
 
 function Resolved(props: FacultySelectorProps) {
-    const resolved = useAsyncValue() as InitPortal;
+    const resolved = useAsyncValue() as Faculties;
 
     return <Select {...props} name="facultyId">
         <Trigger />
@@ -31,7 +31,7 @@ function Resolved(props: FacultySelectorProps) {
             className="w-[var(--radix-select-trigger-width)] min-w-[200px] max-h-[300px]"
         >
             <SelectGroup>
-                {resolved.faculties.map(faculty => (
+                {resolved.map(faculty => (
                     <SelectItem 
                         key={faculty[0]} 
                         value={faculty[0].toString()}
@@ -59,7 +59,7 @@ function Rejected() {
 
 export default function FacultySelector(props: FacultySelectorProps) {
     return <Suspense fallback={<Fallback />}>
-        <Await resolve={props.init} errorElement={<Rejected />}>
+        <Await resolve={props.faculties} errorElement={<Rejected />}>
             <Resolved {...props} />
         </Await>
     </Suspense>
