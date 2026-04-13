@@ -35,7 +35,8 @@ export default defineConfig([
                         "loader",
                         "action",
                         "links",
-                        "meta"
+                        "meta",
+                        "headers",
                     ]
                 },
             ],

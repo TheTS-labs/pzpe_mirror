@@ -5,9 +5,15 @@ import Footer from "~/components/index/Footer";
 import Form from "~/components/index/Form";
 import Schedule from "~/components/index/schedule/Schedule";
 import headPortal from "~/lib/portal/head";
-import type { LoaderFunctionArgs } from "react-router";
+import type { HeadersFunction, LoaderFunctionArgs } from "react-router";
 import getInit from "~/lib/portal/get-init";
 import { Suspense } from "react";
+
+export const headers: HeadersFunction = () => {
+    return {
+        "Cache-Control": "public, max-age=300, s-maxage=300, stale-while-revalidate=3600",
+    };
+};
 
 export async function loader({ context, request }: LoaderFunctionArgs) { 
     const env: Env = context.cloudflare.env;
