@@ -5,9 +5,10 @@ export default function Title({ date }: { date: Dayjs }) {
     const today = dayjs().startOf("day");
     const diffDays = date.startOf("day").diff(today, "day");
 
-    let relativeText = date.fromNow();
+    let relativeText = `in ${diffDays} days`;
     if (diffDays === 0) relativeText = "today";
     if (diffDays === 1) relativeText = "tomorrow";
+    if (diffDays > 25) relativeText = date.fromNow();
 
     return (
         <h1 className="scroll-m-20 pb-2 text-3xl tracking-tight font-semibold first:mt-0 flex flex-col md:items-end md:flex-row md:gap-2">

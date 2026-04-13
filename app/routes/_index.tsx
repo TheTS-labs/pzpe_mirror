@@ -53,12 +53,14 @@ export default function Home() {
 
         <Form faculties={faculties} fetcher={fetcher} bootstrap={bootstrap} />
 
-        <Suspense fallback={<></>}>
+        <Suspense fallback={<Footer />}>
             <Await resolve={bootstrap}>
-                {resolved => <Schedule schedule={fetcher.data?.schedule || resolved?.schedule} />}
+                {resolved => {
+                    const activeSchedule = fetcher.data?.schedule || resolved?.schedule;
+
+                    return activeSchedule ? <Schedule schedule={activeSchedule} /> : <Footer />;
+                }}
             </Await>
         </Suspense>
-
-        {!fetcher.data?.schedule && <Footer />}
     </main>;
 }
