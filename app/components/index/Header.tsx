@@ -24,7 +24,7 @@ export default function Header({ head }: HeaderProps) {
         </h1>
 
         <p className="text-center max-w-prose text-neutral-500">
-            A fast, reliable, and open-source interface for Portal. Enjoy a beautiful modern UI and request caching that eliminates downtime forever
+            A fast, reliable, and open-source interface for Portal. Enjoy a beautiful modern UI and request caching that eliminates downtime forever.
         </p>
     </div>;
 }

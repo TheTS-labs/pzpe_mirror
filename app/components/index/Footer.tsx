@@ -55,7 +55,7 @@ export default function Footer() {
         <AccordionItem value="item-5">
             <AccordionTrigger>What information do you collect?</AccordionTrigger>
             <AccordionContent className="pl-4">
-                    The service only cache the parsed portal responses so the site remains usable when the origin server goes down. The service does not collect analytics, IP addresses, headers, or any tracking data.
+                    The service only caches the parsed portal responses so the site remains usable when the origin server goes down. The service does not collect analytics, IP addresses, headers, or any tracking data.
             </AccordionContent>
         </AccordionItem>
     </Accordion>;
