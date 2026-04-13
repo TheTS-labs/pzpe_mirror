@@ -9,11 +9,9 @@ import type { HeadersFunction, LoaderFunctionArgs } from "react-router";
 import getInit from "~/lib/portal/get-init";
 import { Suspense } from "react";
 
-export const headers: HeadersFunction = () => {
-    return {
-        "Cache-Control": "public, max-age=300, s-maxage=300, stale-while-revalidate=3600",
-    };
-};
+export const headers: HeadersFunction = () => ({
+    "Cache-Control": "public, max-age=1800, s-maxage=1800",
+});
 
 export async function loader({ context, request }: LoaderFunctionArgs) { 
     const env: Env = context.cloudflare.env;
