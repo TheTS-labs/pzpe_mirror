@@ -13,7 +13,7 @@
 * **Framework**: [React Router 7](https://reactrouter.com/) (formerly Remix).
 * **Runtime**: [Cloudflare Workers](https://workers.cloudflare.com/).
 * **Styling**: [Tailwind CSS](https://tailwindcss.com/) & [Shadcn UI](https://ui.shadcn.com/).
-* **Data Processing**: [Cheerio](https://cheerio.js.org/) for DOM parsing and [Day.js](https://day.js.org/) for time management.
+* **Data Processing**: [HTMLRewriter](https://developers.cloudflare.com/workers/runtime-apis/html-rewriter/) for DOM parsing and [Day.js](https://day.js.org/) for time management.
 * **Storage**: [Cloudflare KV](https://developers.cloudflare.com/kv/) for caching schedule data.
 
 ## Getting Started

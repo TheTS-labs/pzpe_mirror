@@ -1,5 +1,4 @@
-import * as cheerio from "cheerio";
-import { TIME_TABLE_URL, getOptions } from ".";
+import { GetOptionsElementHandler, TIME_TABLE_URL } from ".";
 import { getCache, setCache } from "../cache";
 
 export type Faculties = [number, string][];
@@ -9,7 +8,7 @@ export interface Csrf {
     cookies: string,
 }
 
-const FACULTY_SELECTOR = "#timetableform-facultyid";
+const FACULTY_SELECTOR = "#timetableform-facultyid option";
 const META_CSRF_SELECTOR = "meta[name=\"csrf-token\"]";
 const INPUT_CSRF_SELECTOR = "input[name=\"_csrf-frontend\"]";
 
@@ -46,23 +45,29 @@ export default async function getInit(kv: KVNamespace, ctx: ExecutionContext, re
 }
 
 async function hitOrigin(): Promise<{ faculties: Faculties } & Csrf> {
-    const { html, cookies } = await fetch(TIME_TABLE_URL).then(async res => ({
-        html: await res.text(),
-        cookies: createCookieHeader(res.headers.getSetCookie()),
-    }));
+    const res = await fetch(TIME_TABLE_URL);
+    const cookies = createCookieHeader(res.headers.getSetCookie());
+    
+    let metaCsrfToken: string | undefined;
+    let csrfToken: string | undefined;
+    const getOptionsElementHandler = new GetOptionsElementHandler();
 
-    const $ = cheerio.load(html);
-
-    const metaCsrfToken = $(META_CSRF_SELECTOR).attr("content");
-    const csrfToken = $(INPUT_CSRF_SELECTOR).val() as string | undefined;
+    await new HTMLRewriter()
+        .on(META_CSRF_SELECTOR, {
+            element(el) { metaCsrfToken = el.getAttribute("content") || undefined; }
+        })
+        .on(INPUT_CSRF_SELECTOR, {
+            element(el) { csrfToken = el.getAttribute("value") || undefined; }
+        })
+        .on(FACULTY_SELECTOR, getOptionsElementHandler)
+        .transform(res)
+        .arrayBuffer();
 
     if (!metaCsrfToken || !csrfToken) {
         throw new Error("Could not init Portal: No meta CSRF token or input CSRF token");
     }
 
-    const faculties = getOptions($, FACULTY_SELECTOR);
-
-    return { cookies, metaCsrfToken, csrfToken, faculties };
+    return { cookies, metaCsrfToken, csrfToken, faculties: getOptionsElementHandler.options };
 }
 
 function createCookieHeader(setCookie: string[]) {

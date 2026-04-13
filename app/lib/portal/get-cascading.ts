@@ -1,11 +1,10 @@
-import * as cheerio from "cheerio";
-import { TIME_TABLE_URL, getOptions } from ".";
+import { GetOptionsElementHandler, TIME_TABLE_URL } from ".";
 import getInit, { type Csrf } from "./get-init";
 import parseSchedule, { type Schedule } from "./parse-schedule";
 import { getCache, setCache } from "../cache";
 
-const GROUP_SELECTOR = "#timetableform-groupid";
-const STUDENT_SELECTOR = "#timetableform-studentid";
+const GROUP_SELECTOR = "#timetableform-groupid option";
+const STUDENT_SELECTOR = "#timetableform-studentid option";
 
 export interface CascadingRequest {
     course: string,
@@ -49,12 +48,20 @@ export default async function getCascading(req: CascadingRequest, kv: KVNamespac
 }
 
 async function hitOrigin(req: CascadingRequest, csrf: Csrf): Promise<CascadingResponse> {
-    const html = await fetch(TIME_TABLE_URL, createRequestOptions(req, csrf)).then(res => res.text());
-    const $ = cheerio.load(html);
+    const res = await fetch(TIME_TABLE_URL, createRequestOptions(req, csrf));
+
+    const groupsGetOptions = new GetOptionsElementHandler();
+    const studentsGetOptions = new GetOptionsElementHandler();
+
+    const html = await new HTMLRewriter()
+        .on(GROUP_SELECTOR, groupsGetOptions)
+        .on(STUDENT_SELECTOR, studentsGetOptions)
+        .transform(res)
+        .text()
 
     return {
-        groups: getOptions($, GROUP_SELECTOR),
-        students: req.groupId ? getOptions($, STUDENT_SELECTOR) : undefined,
+        groups: groupsGetOptions.options,
+        students: req.groupId ? studentsGetOptions.options : undefined,
         schedule: (req.groupId && req.studentId) ? parseSchedule(html) : undefined,
     }
 }
