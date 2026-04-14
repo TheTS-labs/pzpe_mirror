@@ -1,11 +1,10 @@
 import { GetOptionsElementHandler, TIME_TABLE_URL } from ".";
 import getInit, { type Csrf } from "./get-init";
-import parseSchedule, { GetEventsElementHandler, type Schedule } from "./parse-schedule";
+import parseSchedule, { type Schedule } from "./parse-schedule";
 import { getCache, setCache } from "../cache";
 
 const GROUP_SELECTOR = "#timetableform-groupid option";
 const STUDENT_SELECTOR = "#timetableform-studentid option";
-const SCRIPT_SELECTOR = "script:not([src])";
 
 export interface CascadingRequest {
     course: string,
@@ -53,19 +52,17 @@ async function hitOrigin(req: CascadingRequest, csrf: Csrf): Promise<CascadingRe
 
     const groupsGetOptions = new GetOptionsElementHandler();
     const studentsGetOptions = new GetOptionsElementHandler();
-    const events = new GetEventsElementHandler();
 
-    await new HTMLRewriter()
+    const html = await new HTMLRewriter()
         .on(GROUP_SELECTOR, groupsGetOptions)
         .on(STUDENT_SELECTOR, studentsGetOptions)
-        .on(SCRIPT_SELECTOR, events)
         .transform(res)
         .text()
 
     return {
         groups: groupsGetOptions.options,
         students: req.groupId ? studentsGetOptions.options : undefined,
-        schedule: events.events ? parseSchedule(events.events) : undefined,
+        schedule: (req.groupId && req.studentId) ? parseSchedule(html) : undefined,
     }
 }
 
