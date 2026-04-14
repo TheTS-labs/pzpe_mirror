@@ -5,13 +5,16 @@ import {
     Outlet,
     Scripts,
     ScrollRestoration,
-    type MetaFunction,
+    useLoaderData,
 } from "react-router";
 
 import type { Route } from "./+types/root";
 import "./app.css";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { RouteSpeedInsights } from "./components/RouteSpeedInsights";
+import { getLocaleFromPath } from "intlayer";
+import { IntlayerProvider } from "react-intlayer";
+import { DayjsLocale } from "./components/DayjsLocale";
 
 export const links: Route.LinksFunction = () => [
     { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -26,16 +29,17 @@ export const links: Route.LinksFunction = () => [
     },
 ];
 
-export const meta: MetaFunction = () => {
-    return [
-        { title: "PZPE Mirror" },
-        { name: "description", content: "A fast, reliable, and open-source interface for Portal. Enjoy a beautiful modern UI and request caching that eliminates downtime forever" },
-    ];
-};
+export async function loader({ request }: Route.LoaderArgs) {
+    const locale = getLocaleFromPath(request.url);
+
+    return { locale };
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
+    const { locale } = useLoaderData<typeof loader>();
+
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang={locale} suppressHydrationWarning>
             <head>
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -43,7 +47,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <Links />
             </head>
             <body className="min-h-screen">
-                {children}
+                <IntlayerProvider locale={locale}>
+                    <DayjsLocale />
+                    {children}
+                </IntlayerProvider>
                 <ScrollRestoration />
                 <Scripts />
                 <RouteSpeedInsights />

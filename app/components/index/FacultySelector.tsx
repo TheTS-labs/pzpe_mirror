@@ -3,14 +3,17 @@ import { Await, useAsyncValue } from "react-router";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "~/components/ui/select";
 import type { Faculties } from "~/lib/portal/get-init";
 import { Select as SelectPrimitive } from "radix-ui"
+import { useIntlayer } from "react-intlayer";
 
 export type FacultySelectorProps = {
     faculties: Promise<Faculties>,
 } & React.ComponentProps<typeof SelectPrimitive.Root>;
 
 function Trigger(props: { loading?: boolean }) {
+    const { placeholders } = useIntlayer("form");
+
     return <SelectTrigger className="w-full md:grow" {...props}>
-        <SelectValue placeholder="-- Faculty --" />
+        <SelectValue placeholder={placeholders.faculty} />
     </SelectTrigger>
 }
 
@@ -46,13 +49,15 @@ function Resolved(props: FacultySelectorProps) {
 }
 
 function Rejected() {
+    const { facultiesRejected } = useIntlayer("form");
+
     return <div className="flex flex-col gap-2">
         <Select disabled>
             <Trigger />
         </Select>
 
         <p className="text-[0.8rem] font-medium text-destructive">
-            Failed to load faculties
+            {facultiesRejected}
         </p>
     </div>;
 }

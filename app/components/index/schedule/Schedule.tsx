@@ -13,6 +13,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
 import isBetween from "dayjs/plugin/isBetween";
 import utc from "dayjs/plugin/utc";
+import { useIntlayer } from "react-intlayer";
 
 dayjs.extend(isBetween);
 dayjs.extend(utc);
@@ -27,6 +28,7 @@ export interface ScheduleProps {
 }
 
 export default function Schedule(props: ScheduleProps) {
+    const { teacher, classroom } = useIntlayer("schedule");
     const [now, setNow] = useState(dayjs().tz(TZ));
     
     useEffect(() => {
@@ -72,9 +74,9 @@ export default function Schedule(props: ScheduleProps) {
                             <br />
 
                             <p className="text-neutral-500 italic">
-                                Teacher: <span className="font-bold">{lesson.teacher}</span>
+                                {teacher} <span className="font-bold">{lesson.teacher}</span>
                                 <br />
-                                Classroom: <span className="font-bold">{lesson.classroom}</span>
+                                {classroom} <span className="font-bold">{lesson.classroom}</span>
                             </p>
                         </AccordionContent>
                     </AccordionItem>)}

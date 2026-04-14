@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { useIntlayer } from "react-intlayer";
 import { Await } from "react-router";
 
 export const COLOR_UNKNOWN = "text-neutral-500";
@@ -18,13 +19,15 @@ function Status({ head }: HeaderProps) {
 }
 
 export default function Header({ head }: HeaderProps) {
+    const { description } = useIntlayer("index");
+
     return <div className="flex flex-col items-center gap-2">
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance text-center">
             <Status head={head} /> Mirror
         </h1>
 
         <p className="text-center max-w-prose text-neutral-500">
-            A fast, reliable, and open-source interface for Portal. Enjoy a beautiful modern UI and request caching that eliminates downtime forever.
+            {description}
         </p>
     </div>;
 }

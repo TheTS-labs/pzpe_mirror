@@ -6,6 +6,7 @@ import { Await, useSearchParams, type FetcherWithComponents } from "react-router
 import { Suspense, useCallback } from "react";
 import type { Faculties } from "~/lib/portal/get-init";
 import type { CascadingResponse } from "~/lib/portal/get-cascading";
+import { useIntlayer } from "react-intlayer";
 
 export interface FormProps {
     fetcher: FetcherWithComponents<CascadingResponse | null>,
@@ -14,6 +15,7 @@ export interface FormProps {
 }
 
 export default function Form(props: FormProps) {
+    const { placeholders } = useIntlayer("form");
     const [searchParams, setSearchParams] = useSearchParams();
 
     const onFormChange = useCallback<React.ChangeEventHandler<HTMLFormElement>>((e) => {
@@ -56,14 +58,14 @@ export default function Form(props: FormProps) {
                 name="groupId"
                 data={activeData?.groups}
                 loading={isLoadingGroups}
-                placeholder="--- Group ---"
+                placeholder={placeholders.group}
                 defaultValue={searchParams.get("groupId") || undefined}
             />
             <Selector
                 name="studentId"
                 data={activeData?.students}
                 loading={isLoadingStudents}
-                placeholder="--- Student ---"
+                placeholder={placeholders.student}
                 disabled={isLoadingGroups}
                 defaultValue={searchParams.get("studentId") || undefined}
             />

@@ -1,12 +1,15 @@
 import { Select as SelectPrimitive } from "radix-ui"
+import { useIntlayer } from "react-intlayer";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "~/components/ui/select";
 
 export type CourseSelectorProps = React.ComponentProps<typeof SelectPrimitive.Root>;
 
 export default function CourseSelector(props: CourseSelectorProps) {
+    const { placeholders } = useIntlayer("form");
+
     return <Select {...props} name="course">
         <SelectTrigger className="w-full md:grow">
-            <SelectValue placeholder="-- Course --" />
+            <SelectValue placeholder={placeholders.course} />
         </SelectTrigger>
         
         <SelectContent position="popper">
