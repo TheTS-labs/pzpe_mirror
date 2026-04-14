@@ -1,5 +1,3 @@
-import sanitizeHtml from "sanitize-html";
-
 export interface Lesson<T = string> {
     subject: {
         full: string;
@@ -19,9 +17,7 @@ export interface Schedule {
     [date: string]: Lesson[]
 }
 
-export default function parseSchedule(html: string) {
-    const events = getEventsVariable(html);
-
+export default function parseSchedule(events: { [key: string]: Event }) {
     const cleaned = Object.values(events).map(event => ({
         subject: {
             full: event.disciplineFullName.trim(),
@@ -37,10 +33,7 @@ export default function parseSchedule(html: string) {
 
         teacher: event.teachersName,
         classroom: event.classroom.replace("ауд. ", ""),
-        notice: sanitizeHtml(event.notice !== "" ? event.notice : event.info, {
-            allowedTags: [ "br" ],
-            allowedAttributes: { }
-        }).replaceAll("<br />", "\n")
+        notice: stripTags(event.notice !== "" ? event.notice : event.info)
     }));
 
     return cleaned.reduce((acc, item) => {
@@ -85,14 +78,32 @@ interface Event {
     text: string;
 }
 
-function getEventsVariable(html: string): { [key: string]: Event } {
-    const regex = /var events = ({[\s\S]*?});/;
-    const match = html.match(regex);
+export class GetEventsElementHandler implements HTMLRewriterElementContentHandlers {
+    events: { [key: string]: Event } | undefined = undefined;
 
-    if (!match) {
-        throw new Error("Could not find `events` variable in the HTML")
+    #buffer = "";
+    #readingVariable = false;
+
+    text(element: Text) {
+        if (this.events) { return; }
+
+        this.#buffer += element.text;
+
+        const opening = this.#buffer.indexOf("var events = ");
+        if (opening != -1) {
+            this.#readingVariable = true;
+            this.#buffer = this.#buffer.slice(opening + 13, this.#buffer.length);
+        }
+
+        const closing = this.#buffer.indexOf("}};");
+        if (closing != -1 && this.#readingVariable) {
+            this.events = JSON.parse(this.#buffer.slice(0, closing + 2))
+        }
     }
+}
 
-    const jsonString = match[1];
-    return JSON.parse(jsonString || "");
+function stripTags(str: string) {
+    return str
+        .replace(/<\/?br\s*\/?>/gi, "\n")
+        .replace(/<[^>]+>/g, "");
 }
