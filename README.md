@@ -6,22 +6,21 @@
     <a href="https://github.com/TheTS-labs/pzpe_mirror/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/TheTS-labs/pzpe_mirror?style=for-the-badge"></a>
 </p>
 
-
 **PZPE Mirror** is a fast, reliable, and open-source web interface for the [Zaporizhzhia National Polytechnic University Portal](https://portal.zp.edu.ua). It provides a modern user experience and implements aggressive request caching to ensure the schedule remains accessible even during portal downtime.
 
 ## Features
 
 * **Modern UI**: Built with a clean, responsive interface using Tailwind CSS and Shadcn components.
-* **Downtime Protection**: Utilizes Cloudflare KV for request caching, mitigating issues when the upstream portal is unavailable.
-* **Edge Powered**: Optimized for deployment on Cloudflare Workers for global low-latency performance.
+* **Downtime Protection**: Utilizes Redis for request caching, mitigating issues when the upstream portal is unavailable.
+* **Edge Powered**: Serverless-friendly architecture ready to deploy on Vercel
 
 ## Tech Stack
 
 * **Framework**: [React Router 7](https://reactrouter.com/) (formerly Remix).
-* **Runtime**: [Cloudflare Workers](https://workers.cloudflare.com/).
+* **Runtime**: [Vercel](https://vercel.com/).
 * **Styling**: [Tailwind CSS](https://tailwindcss.com/) & [Shadcn UI](https://ui.shadcn.com/).
-* **Data Processing**: [HTMLRewriter](https://developers.cloudflare.com/workers/runtime-apis/html-rewriter/) for DOM parsing and [Day.js](https://day.js.org/) for time management.
-* **Storage**: [Cloudflare KV](https://developers.cloudflare.com/kv/) for caching schedule data.
+* **Data Processing**: [Cheerio.JS](https://cheerio.js.org/) for DOM parsing and [Day.js](https://day.js.org/) for time management.
+* **Storage**: [Upstash Redis](https://upstash.com/docs/redis/overall/getstarted/) for caching schedule data.
 
 ## Getting Started
 
@@ -56,10 +55,8 @@ npm run dev
 
 ### Deployment
 
-Deploy the project to Cloudflare Workers:
+Deploy the project to Vercel:
 
 ```bash
-npm run deploy
+npx vercel --prod
 ```
-
-*Note: Ensure your `wrangler.jsonc` is configured with the correct KV namespace ID and custom domain settings*.

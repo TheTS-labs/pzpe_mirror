@@ -6,7 +6,8 @@ import Notice from "./Notice";
 import LessonTrigger from "./LessonTrigger";
 import Title from "./Title";
 
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
+import type { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";

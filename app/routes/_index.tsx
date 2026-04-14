@@ -15,25 +15,19 @@ export const headers: HeadersFunction = () => {
     };
 };
 
-export async function loader({ context, request }: LoaderFunctionArgs) { 
-    const env: Env = context.cloudflare.env;
-    const ctx: ExecutionContext = context.cloudflare.ctx;
-
+export async function loader({ request }: LoaderFunctionArgs) { 
     const params = new URL(request.url).searchParams;
     const req = Object.fromEntries(params) as Partial<CascadingRequest>;
     const runBootstrap = !!req["facultyId"] && !!req["course"];
 
     return {
-        faculties: getInit(env.PZPE_CACHE, ctx),
+        faculties: getInit(),
         head: headPortal(),
-        bootstrap: runBootstrap ? getCascading(req as CascadingRequest, env.PZPE_CACHE, ctx) : undefined,
+        bootstrap: runBootstrap ? getCascading(req as CascadingRequest) : undefined,
     };
 };
 
-export async function action({ request, context }: ActionFunctionArgs) {
-    const env: Env = context.cloudflare.env;
-    const ctx: ExecutionContext = context.cloudflare.ctx;
-
+export async function action({ request }: ActionFunctionArgs) {
     const formData = await request.formData();
     const req = Object.fromEntries(formData) as Partial<CascadingRequest>;
 
@@ -41,7 +35,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
         return null;
     }
 
-    return getCascading(req as CascadingRequest, env.PZPE_CACHE, ctx);
+    return getCascading(req as CascadingRequest);
 }
 
 export default function Home() {

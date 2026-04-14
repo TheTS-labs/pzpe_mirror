@@ -1,7 +1,7 @@
 import { AccordionTrigger } from "~/components/ui/accordion";
 import type { Lesson } from "~/lib/portal/parse-schedule";
 
-import { Dayjs } from "dayjs";
+import type { Dayjs } from "dayjs";
 
 export default function LessonTrigger({ lesson, now }: { lesson: Lesson<Dayjs>, now: Dayjs }) {
     const textColor = now?.isBetween(
