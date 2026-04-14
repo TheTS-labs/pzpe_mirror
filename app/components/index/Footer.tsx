@@ -51,12 +51,5 @@ export default function Footer() {
                     Of course!! Donations are always welcome: <a className="text-blue-400 underline" href="https://send.monobank.ua/4vQFjAuSmJ" target="_blank" rel="noopener noreferrer">Monobank</a>
             </AccordionContent>
         </AccordionItem>
-
-        <AccordionItem value="item-5">
-            <AccordionTrigger>What information do you collect?</AccordionTrigger>
-            <AccordionContent className="pl-4">
-                    The service only caches the parsed portal responses so the site remains usable when the origin server goes down. The service does not collect analytics, IP addresses, headers, or any tracking data.
-            </AccordionContent>
-        </AccordionItem>
     </Accordion>;
 }

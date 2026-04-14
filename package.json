@@ -21,6 +21,7 @@
     "@upstash/redis": "^1.37.0",
     "@vercel/functions": "^3.4.3",
     "@vercel/react-router": "^1.2.6",
+    "@vercel/speed-insights": "^2.0.0",
     "cheerio": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
