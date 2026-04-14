@@ -10,14 +10,6 @@ export default async function handleRequest(
     routerContext: EntryContext,
     _loadContext: AppLoadContext
 ) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cache = (caches as any).default as Cache;
-
-    const cachedResponse = await cache.match(request);
-    if (cachedResponse) {
-        return cachedResponse;
-    }
-
     let shellRendered = false;
     const userAgent = request.headers.get("user-agent");
 
@@ -44,13 +36,8 @@ export default async function handleRequest(
     }
 
     responseHeaders.set("Content-Type", "text/html");
-
-    const response = new Response(body, {
+    return new Response(body, {
         headers: responseHeaders,
         status: responseStatusCode,
     });
-
-    _loadContext.cloudflare.ctx.waitUntil(cache.put(request, response.clone()));
-
-    return response;
 }
