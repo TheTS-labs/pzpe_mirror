@@ -1,30 +1,19 @@
-import { decode } from "html-entities";
+import * as cheerio from "cheerio";
 
 export const BASE_URL = "https://portal.zp.edu.ua";
 export const TIME_TABLE_URL = `${BASE_URL}/time-table/student?type=1`;
 
-export class GetOptionsElementHandler implements HTMLRewriterElementContentHandlers {
-    options: [number, string][] = [];
+export function getOptions($: cheerio.CheerioAPI, selector: string): [number, string][] {
+    return $(selector).children("option").map((_, el) => {
+        const element = $(el);
 
-    #currentId: number | undefined = undefined;
-    #currentText = "";
+        const id = parseInt(element.attr("value") || "", 10);
+        const name = element.text().trim();
 
-    element(element: Element) {
-        const id = parseInt(element.getAttribute("value") || "", 10);
+        if (Number.isNaN(id)) { return null; }
 
-        this.#currentId = Number.isNaN(id) ? undefined : id;
-        this.#currentText = "";
-
-        element.onEndTag(() => {
-            if (this.#currentId) {
-                this.options.push([this.#currentId, decode(this.#currentText)]);
-            }
-        });
-    }
-
-    text(element: Text) {
-        if (this.#currentId) {
-            this.#currentText += element.text;
-        }
-    }
+        return [[ id, name ]]; 
+    })
+        .get()
+        .filter(el => el !== null) as [number, string][]; 
 }
