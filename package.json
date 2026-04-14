@@ -9,9 +9,7 @@
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "deploy": "npm run build && wrangler deploy",
-    "preview": "npm run build && wrangler dev"
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",
