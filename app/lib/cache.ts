@@ -1,4 +1,6 @@
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
+
+const redis = Redis.fromEnv();
 
 export interface Metadata {
     createdAt: number;
@@ -11,7 +13,7 @@ interface CachePayload<T> {
 }
 
 export async function getCache<T>(key: string): Promise<{ value: T, metadata: Metadata } | undefined> {
-    const payload = await kv.get<CachePayload<T>>(key);
+    const payload = await redis.get<CachePayload<T>>(key);
     
     if (!payload || !payload.value || !payload.metadata) { 
         return undefined; 
@@ -38,8 +40,8 @@ export async function setCache(
     };
 
     if (options?.expirationTtl) {
-        return kv.set(key, payload, { ex: options.expirationTtl });
+        return redis.set(key, payload, { ex: options.expirationTtl });
     }
 
-    return kv.set(key, payload);
+    return redis.set(key, payload);
 }
