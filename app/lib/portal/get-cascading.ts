@@ -25,11 +25,11 @@ const CACHE_KEY = (req: CascadingRequest) => `${req.facultyId}:${req.course}:${r
 const CACHE_TTL = 60 * 60 * 24 * 7;
 
 export default async function getCascading(req: CascadingRequest) {
-    const now = Date.now();
     const key = CACHE_KEY(req);
     const cache = await getCache<CascadingResponse>(key);
+
     if (cache) {
-        if (cache.metadata.staleAt && now > cache.metadata.staleAt) {
+        if (cache.metadata.isStale?.()) {
             waitUntil((async () => {
                 const csrf = await getInit("csrf");
                 const res = await hitOrigin(req, csrf);

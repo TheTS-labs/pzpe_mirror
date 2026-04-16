@@ -5,6 +5,7 @@ const redis = Redis.fromEnv();
 export interface Metadata {
     createdAt: number;
     staleAt: number | undefined;
+    isStale?: () => boolean;
 }
 
 interface CachePayload<T> {
@@ -21,7 +22,12 @@ export async function getCache<T>(key: string): Promise<{ value: T, metadata: Me
 
     return { 
         value: payload.value, 
-        metadata: payload.metadata 
+        metadata: {
+            ...payload.metadata,
+            isStale: payload.metadata.staleAt
+                ? () => Date.now() > payload.metadata.staleAt!
+                : undefined,
+        } 
     };
 }
 
