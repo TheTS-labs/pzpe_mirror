@@ -21,12 +21,11 @@ const CACHE_TTL = 60 * 60 * 24 * 7;
 export default async function getInit(requestFor?: "faculties"): Promise<Faculties>;
 export default async function getInit(requestFor: "csrf"): Promise<Csrf>;
 export default async function getInit(requestFor: "faculties" | "csrf" = "faculties"): Promise<Csrf | Faculties> {
-    const now = Date.now();
     const key = requestFor == "faculties" ? FACULTIES_CACHE_KEY : CSRF_CACHE_KEY;
 
     const cache = await getCache<Csrf | Faculties>(key);
     if (cache) {
-        if (cache.metadata.staleAt && now > cache.metadata.staleAt) {
+        if (cache.metadata.isStale?.()) {
             waitUntil((async () => {
                 const { faculties, ...csrf } = await hitOrigin();
 
