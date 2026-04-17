@@ -4,6 +4,7 @@ import parseSchedule, { type Schedule } from "./parse-schedule";
 import { getCache, setCache } from "../cache";
 import { waitUntil } from "@vercel/functions";
 import * as cheerio from "cheerio";
+import PortalError from "./portal-error";
 
 const GROUP_SELECTOR = "#timetableform-groupid";
 const STUDENT_SELECTOR = "#timetableform-studentid";
@@ -50,7 +51,10 @@ export default async function getCascading(req: CascadingRequest) {
 }
 
 async function hitOrigin(req: CascadingRequest, csrf: Csrf): Promise<CascadingResponse> {
-    const html = await fetch(TIME_TABLE_URL, createRequestOptions(req, csrf)).then(res => res.text());
+    const html = await fetch(TIME_TABLE_URL, createRequestOptions(req, csrf))
+        .then(res => res.text())
+        .catch(() => { throw new PortalError("origin_request_failed"); });
+
     const $ = cheerio.load(html);
 
     return {

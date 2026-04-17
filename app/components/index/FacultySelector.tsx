@@ -4,9 +4,10 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectI
 import type { Faculties } from "~/lib/portal/get-init";
 import { Select as SelectPrimitive } from "radix-ui"
 import { useIntlayer } from "react-intlayer";
+import type { Result } from "~/lib/portal";
 
 export type FacultySelectorProps = {
-    faculties: Promise<Faculties>,
+    faculties: Promise<Result<Faculties>>,
 } & React.ComponentProps<typeof SelectPrimitive.Root>;
 
 function Trigger(props: { loading?: boolean }) {
@@ -24,7 +25,7 @@ function Fallback() {
 }
 
 function Resolved(props: FacultySelectorProps) {
-    const resolved = useAsyncValue() as Faculties;
+    const resolved = useAsyncValue() as Result<Faculties>;
 
     return <Select {...props} name="facultyId">
         <Trigger />
@@ -34,7 +35,7 @@ function Resolved(props: FacultySelectorProps) {
             className="w-[var(--radix-select-trigger-width)] min-w-[200px] max-h-[300px]"
         >
             <SelectGroup>
-                {resolved.map(faculty => (
+                {resolved.result?.map(faculty => (
                     <SelectItem 
                         key={faculty[0]} 
                         value={faculty[0].toString()}
@@ -49,7 +50,8 @@ function Resolved(props: FacultySelectorProps) {
 }
 
 function Rejected() {
-    const { facultiesRejected } = useIntlayer("form");
+    const rejected = useAsyncValue() as Result<Faculties>;
+    const errors = useIntlayer("errors");
 
     return <div className="flex flex-col gap-2">
         <Select disabled>
@@ -57,15 +59,15 @@ function Rejected() {
         </Select>
 
         <p className="text-[0.8rem] font-medium text-destructive">
-            {facultiesRejected}
+            {errors[rejected.errCode!]}
         </p>
     </div>;
 }
 
 export default function FacultySelector(props: FacultySelectorProps) {
     return <Suspense fallback={<Fallback />}>
-        <Await resolve={props.faculties} errorElement={<Rejected />}>
-            <Resolved {...props} />
+        <Await resolve={props.faculties}>
+            {resolved => resolved.errCode ? <Rejected /> : <Resolved {...props} />}
         </Await>
     </Suspense>
 }

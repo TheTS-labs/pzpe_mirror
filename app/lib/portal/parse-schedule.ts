@@ -1,4 +1,5 @@
 import sanitizeHtml from "sanitize-html";
+import PortalError from "./portal-error";
 
 export interface Lesson<T = string> {
     subject: {
@@ -90,7 +91,7 @@ function getEventsVariable(html: string): { [key: string]: Event } {
     const match = html.match(regex);
 
     if (!match) {
-        throw new Error("Could not find `events` variable in the HTML")
+        throw new PortalError("schedule_parsing_failed");
     }
 
     const jsonString = match[1];

@@ -7,11 +7,12 @@ import { Suspense, useCallback } from "react";
 import type { Faculties } from "~/lib/portal/get-init";
 import type { CascadingResponse } from "~/lib/portal/get-cascading";
 import { useIntlayer } from "react-intlayer";
+import type { Result } from "~/lib/portal";
 
 export interface FormProps {
-    fetcher: FetcherWithComponents<CascadingResponse | null>,
-    faculties: Promise<Faculties>,
-    bootstrap: Promise<CascadingResponse> | undefined,
+    fetcher: FetcherWithComponents<Result<CascadingResponse> | null>,
+    faculties: Promise<Result<Faculties>>,
+    bootstrap: Promise<Result<CascadingResponse>> | undefined,
 }
 
 export default function Form(props: FormProps) {
@@ -50,20 +51,20 @@ export default function Form(props: FormProps) {
     const isLoadingStudents = isSubmitting && formData?.has("groupId") && !formData?.has("studentId");
     const isLoadingSchedule = isSubmitting && formData?.has("groupId") && formData?.has("studentId");
 
-    const renderSelectors = (bootstrapData?: CascadingResponse) => {
+    const renderSelectors = (bootstrapData?: Result<CascadingResponse>) => {
         const activeData = props.fetcher.data || bootstrapData;
 
         return <>
             <Selector
                 name="groupId"
-                data={activeData?.groups}
+                data={activeData?.result?.groups}
                 loading={isLoadingGroups}
                 placeholder={placeholders.group}
                 defaultValue={searchParams.get("groupId") || undefined}
             />
             <Selector
                 name="studentId"
-                data={activeData?.students}
+                data={activeData?.result?.students}
                 loading={isLoadingStudents}
                 placeholder={placeholders.student}
                 disabled={isLoadingGroups}

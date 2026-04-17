@@ -10,6 +10,7 @@ import getInit from "~/lib/portal/get-init";
 import { Suspense } from "react";
 import { getIntlayer, validatePrefix } from "intlayer";
 import LocaleSwitcher from "~/components/index/LocaleSwitcher";
+import { errorBoundary } from "~/lib/portal";
 
 export const headers: HeadersFunction = () => ({
     "Cache-Control": "public, max-age=300, s-maxage=300, stale-while-revalidate=3600",
@@ -35,9 +36,9 @@ export async function loader({ request, params: urlPathParams }: LoaderFunctionA
     const runBootstrap = !!req["facultyId"] && !!req["course"];
 
     return {
-        faculties: getInit(),
+        faculties: errorBoundary(() => getInit()),
         head: headPortal(),
-        bootstrap: runBootstrap ? getCascading(req as CascadingRequest) : undefined,
+        bootstrap: runBootstrap ? errorBoundary(() => getCascading(req as CascadingRequest)) : undefined,
     };
 };
 
@@ -49,7 +50,7 @@ export async function action({ request }: ActionFunctionArgs) {
         return null;
     }
 
-    return getCascading(req as CascadingRequest);
+    return errorBoundary(() => getCascading(req as CascadingRequest));
 }
 
 export default function Home() {
@@ -64,7 +65,7 @@ export default function Home() {
         <Suspense fallback={<Footer />}>
             <Await resolve={bootstrap}>
                 {resolved => {
-                    const activeSchedule = fetcher.data?.schedule || resolved?.schedule;
+                    const activeSchedule = fetcher.data?.result?.schedule || resolved?.result?.schedule;
 
                     return activeSchedule ? <Schedule schedule={activeSchedule} /> : <Footer />;
                 }}

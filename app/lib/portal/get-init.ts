@@ -2,6 +2,7 @@ import { getOptions, TIME_TABLE_URL } from ".";
 import { getCache, setCache } from "../cache";
 import { waitUntil } from "@vercel/functions";
 import * as cheerio from "cheerio";
+import PortalError from "./portal-error";
 
 export type Faculties = [number, string][];
 export interface Csrf {
@@ -49,7 +50,7 @@ async function hitOrigin(): Promise<{ faculties: Faculties } & Csrf> {
     const { html, cookies } = await fetch(TIME_TABLE_URL).then(async res => ({
         html: await res.text(),
         cookies: createCookieHeader(res.headers.getSetCookie()),
-    }));
+    })).catch(() => { throw new PortalError("origin_request_failed"); });
 
     const $ = cheerio.load(html);
 
@@ -57,7 +58,7 @@ async function hitOrigin(): Promise<{ faculties: Faculties } & Csrf> {
     const csrfToken = $(INPUT_CSRF_SELECTOR).val() as string | undefined;
 
     if (!metaCsrfToken || !csrfToken) {
-        throw new Error("Could not init Portal: No meta CSRF token or input CSRF token");
+        throw new PortalError("csrf_missing");
     }
 
     const faculties = getOptions($, FACULTY_SELECTOR);
