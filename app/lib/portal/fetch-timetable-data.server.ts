@@ -1,12 +1,15 @@
 import * as cheerio from "cheerio";
 import { TIME_TABLE_URL, type Csrf, type Req, type Res } from ".";
-import { manageCache } from "../cache-manager";
-import PortalError from "./portal-error";
-import parseSchedule from "./parse-schedule";
-import { createRequestOptions, getOptions, createCookieHeader } from "./utils";
-import { BASE_KEY, CACHE_TTL, createReqKey, COURSE_SELECTOR, GROUP_SELECTOR, STUDENT_SELECTOR, META_CSRF_SELECTOR, INPUT_CSRF_SELECTOR, FACULTY_SELECTOR } from "./constants";
+import { manageCache } from "../cache-manager.server";
+import PortalError from "./portal-error.server";
+import parseSchedule from "./parse-schedule.server";
+import { createRequestOptions, getOptions, createCookieHeader } from "./utils.server";
+import { BASE_KEY, CACHE_TTL, createReqKey, COURSE_SELECTOR, GROUP_SELECTOR, STUDENT_SELECTOR, META_CSRF_SELECTOR, INPUT_CSRF_SELECTOR, FACULTY_SELECTOR } from "./constants.server";
+import log from "../log.server";
 
 export default async function fetchTimetableData(req: Req, ignoreCache = false): Promise<Res> {
+    log("core", { req, ignoreCache });
+
     const { value: { faculties, ...csrf } } = await manageCache(BASE_KEY, CACHE_TTL, revalidateBase);
 
     if (!req.facultyId) {

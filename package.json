@@ -12,6 +12,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@axiomhq/js": "^1.6.0",
     "@fontsource-variable/inter": "^5.2.8",
     "@react-router/fs-routes": "^7.14.0",
     "@react-router/node": "7.14.0",

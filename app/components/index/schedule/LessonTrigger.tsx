@@ -1,5 +1,5 @@
 import { AccordionTrigger } from "~/components/ui/accordion";
-import type { Lesson } from "~/lib/portal/parse-schedule";
+import type { Lesson } from "~/lib/portal/parse-schedule.server";
 
 import type { Dayjs } from "dayjs";
 

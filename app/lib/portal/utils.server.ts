@@ -1,8 +1,9 @@
 import * as cheerio from "cheerio";
 import type { Req, Csrf } from ".";
+import log from "../log.server";
 
 export function getOptions($: cheerio.CheerioAPI, selector: string): [number, string][] {
-    return $(selector).children("option").map((_, el) => {
+    const pairs = $(selector).children("option").map((_, el) => {
         const element = $(el);
 
         const id = parseInt(element.attr("value") || "", 10);
@@ -14,6 +15,10 @@ export function getOptions($: cheerio.CheerioAPI, selector: string): [number, st
     })
         .get()
         .filter(el => el !== null) as [number, string][];
+
+    log("parsing", { selector, pairs: pairs.length });
+
+    return pairs;
 }
 
 export function createCookieHeader(setCookie: string[]) {

@@ -1,6 +1,5 @@
-import type { Schedule } from "./parse-schedule";
-import type { ErrorCodes } from "./portal-error";
-import PortalError from "./portal-error";
+import type { Schedule } from "./parse-schedule.server";
+import type { ErrorCodes } from "./portal-error.server";
 
 export const BASE_URL = "https://portal.zp.edu.ua";
 export const TIME_TABLE_URL = `${BASE_URL}/time-table/student?type=1`;
@@ -35,17 +34,3 @@ export type Result<T> = {
     errCode: ErrorCodes,
     result?: undefined,
 };
-
-export async function errorBoundary<Ret>(
-    fn: () => Promise<Ret>,
-): Promise<Result<Ret>> {
-    return fn()
-        .then(result => ({ result }))
-        .catch((err: unknown) => {
-            if (err instanceof PortalError) {
-                return { errCode: err.errCode }; 
-            }
-
-            throw err; 
-        });
-}
