@@ -35,7 +35,7 @@ export default function Form({ data }: FormProps) {
     }, [setSearchParams]);
 
     return <form
-        className="flex flex-col md:flex-row gap-5 items-center justify-items-center md:max-w-prose w-full"
+        className="flex flex-col md:flex-row gap-5 items-center justify-center w-full"
         onChange={onFormChange}
     >
         <Selector

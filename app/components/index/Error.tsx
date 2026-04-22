@@ -19,7 +19,7 @@ export default function Error(props: ErrorProps) {
 
     return <Suspense>
         <Await resolve={props.data}>
-            {({ errCode }) => errCode && <Item variant="outline" className="md:max-w-prose w-full">
+            {({ errCode }) => errCode && <Item variant="muted" className="w-full">
                 <ItemMedia variant="icon">
                     <CircleX />
                 </ItemMedia>

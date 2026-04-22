@@ -38,7 +38,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 };
 
 export default function Home({ loaderData: { data, head } }: Route.ComponentProps) {
-    return <main className="p-12 flex flex-col items-center gap-10">
+    return <main className="justify-center p-6 pt-12 flex flex-col items-center gap-10 w-full md:max-w-prose mx-auto">
         <Header head={head} />
 
         <Form data={data} />
@@ -47,12 +47,13 @@ export default function Home({ loaderData: { data, head } }: Route.ComponentProp
 
         <Suspense fallback={<Footer />}>
             <Await resolve={data}>
-                {resolved => <div>
+                {resolved => <div className="w-full md:max-w-2xl">
                     {Object.keys(resolved.result?.schedule || {}).length > 0 
-                        ? <Schedule schedule={resolved.result?.schedule} /> 
+                        ? <>
+                            <Schedule schedule={resolved.result?.schedule} />
+                            {resolved.result?.cacheCreatedAt && <Metadata createdAt={resolved.result?.cacheCreatedAt} />}
+                        </>
                         : <Footer />}
-
-                    {resolved.result?.cacheCreatedAt && <Metadata createdAt={resolved.result?.cacheCreatedAt} />}
                 </div>}
             </Await>
         </Suspense>

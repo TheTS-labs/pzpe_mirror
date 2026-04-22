@@ -18,7 +18,7 @@ export interface MetadataProps {
 export default function Metadata(props: MetadataProps) {
     const { cachedAt, refresh } = useIntlayer("schedule");
 
-    return <Item className="w-full max-w-4xl md:max-w-2xl text-muted-foreground">
+    return <Item className="w-full text-muted-foreground">
         <ItemMedia variant="icon">
             <History />
         </ItemMedia>
