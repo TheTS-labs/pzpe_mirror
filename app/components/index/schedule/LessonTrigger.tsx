@@ -11,7 +11,7 @@ export default function LessonTrigger({ lesson, now }: { lesson: Lesson<Dayjs>, 
     
     return <AccordionTrigger className={textColor}>
         <div className="pr-4">
-            <span className="whitespace-nowrap font-bold mr-5">
+            <span className="whitespace-nowrap font-bold mr-5 tabular-nums">
                 {`${lesson.time.start.format("HH:mm")} - ${lesson.time.end.format("HH:mm")}:`}
             </span>
 
