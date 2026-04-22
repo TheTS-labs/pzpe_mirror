@@ -3,6 +3,11 @@ import { waitUntil } from "@vercel/functions";
 
 const redis = Redis.fromEnv();
 
+export interface Payload<T> {
+    value: T,
+    metadata?: Metadata
+}
+
 interface Metadata {
     createdAt: number;
     staleAt: number;
@@ -13,14 +18,14 @@ interface CachePayload<T> {
     metadata: Metadata;
 }
 
-export async function manageCache<T>(key: string, ex: number, revalidate: () => Promise<T>): Promise<T> {
+export async function manageCache<T>(key: string, ex: number, revalidate: () => Promise<T>): Promise<Payload<T>> {
     const payload = await redis.get<CachePayload<T>>(key);
     if (!payload || !payload.value || !payload.metadata) {
         const value = await revalidate();
 
         waitUntil(writeCache(key, value, ex));
 
-        return value;
+        return { value };
     }
 
     waitUntil((async () => {
@@ -30,7 +35,7 @@ export async function manageCache<T>(key: string, ex: number, revalidate: () => 
         }
     })());
 
-    return payload.value;
+    return payload;
 }
 
 async function writeCache(key: string, value: unknown, ex: number) {

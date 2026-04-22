@@ -27,6 +27,16 @@ const content = {
             "en-US": "ddd",
             "uk-UA": "dd",
         }),
+
+        cachedAt: t({
+            "en-US": "Updated",
+            "uk-UA": "Оновлено",
+        }),
+
+        refresh: t({
+            "en-US": "Refresh",
+            "uk-UA": "Оновити",
+        }),
     },
 } satisfies Dictionary;
 

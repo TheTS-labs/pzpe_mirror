@@ -18,6 +18,8 @@ export interface Res {
     groups: [number, string][],
     students: [number, string][],
     schedule: Schedule,
+
+    cacheCreatedAt?: number,
 }
 
 export interface Csrf {

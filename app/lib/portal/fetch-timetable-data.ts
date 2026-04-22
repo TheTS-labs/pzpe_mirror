@@ -7,7 +7,7 @@ import { createRequestOptions, getOptions, createCookieHeader } from "./utils";
 import { BASE_KEY, CACHE_TTL, createReqKey, COURSE_SELECTOR, GROUP_SELECTOR, STUDENT_SELECTOR, META_CSRF_SELECTOR, INPUT_CSRF_SELECTOR, FACULTY_SELECTOR } from "./constants";
 
 export default async function fetchTimetableData(req: Req): Promise<Res> {
-    const { faculties, ...csrf } = await manageCache(BASE_KEY, CACHE_TTL, revalidateBase);
+    const { value: { faculties, ...csrf } } = await manageCache(BASE_KEY, CACHE_TTL, revalidateBase);
 
     if (!req.facultyId) {
         return {
@@ -20,7 +20,7 @@ export default async function fetchTimetableData(req: Req): Promise<Res> {
     }
 
     return manageCache(createReqKey(req), CACHE_TTL, () => revalidate(req, csrf))
-        .then(res => ({ faculties, ...res }));
+        .then(({ value, metadata }) => ({ faculties, ...value, cacheCreatedAt: metadata?.createdAt }));
 }
 
 async function revalidate(req: Req, csrf: Csrf): Promise<Omit<Res, "faculties">> {

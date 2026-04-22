@@ -12,6 +12,7 @@ import { errorBoundary, type Req } from "~/lib/portal";
 import type { Route } from "./+types/($locale)._index";
 import fetchTimetableData from "~/lib/portal/fetch-timetable-data";
 import Error from "~/components/index/Error";
+import Metadata from "~/components/index/Metadata";
 
 export const headers: HeadersFunction = () => ({
     "Cache-Control": "public, max-age=300, s-maxage=300, stale-while-revalidate=3600",
@@ -46,11 +47,13 @@ export default function Home({ loaderData: { data, head } }: Route.ComponentProp
 
         <Suspense fallback={<Footer />}>
             <Await resolve={data}>
-                {resolved => 
-                    Object.keys(resolved.result?.schedule || {}).length > 0 
+                {resolved => <div>
+                    {Object.keys(resolved.result?.schedule || {}).length > 0 
                         ? <Schedule schedule={resolved.result?.schedule} /> 
-                        : <Footer />
-                }
+                        : <Footer />}
+
+                    {resolved.result?.cacheCreatedAt && <Metadata createdAt={resolved.result?.cacheCreatedAt} />}
+                </div>}
             </Await>
         </Suspense>
 
