@@ -6,14 +6,10 @@
 /.react-router/
 /build/
 
-# wrangler files
-.wrangler
-.dev.vars*
-!.dev.vars.example
-!.env.example
-
 .env*
 .vercel
 
 # Intlayer
 .intlayer
+
+!.env.example

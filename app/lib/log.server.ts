@@ -2,6 +2,8 @@ import { AxiomWithoutBatching } from "@axiomhq/js";
 import { waitUntil } from "@vercel/functions";
 import { AsyncLocalStorage } from "node:async_hooks";
 
+const noAxiom = !process.env.AXIOM_DATASET_NAME || !process.env.AXIOM_TOKEN;
+
 const DATASET = process.env.AXIOM_DATASET_NAME!;
 const axiom = new AxiomWithoutBatching({
     token: process.env.AXIOM_TOKEN!,
@@ -18,8 +20,8 @@ export type LogKind = "core" | "cache" | "parsing" | "error";
 export default function log(kind: LogKind, payload: object) {
     const store = logContext.getStore();
 
-    if (process.env.NODE_ENV === "development") {
-        console.log("[AXIOM]", { kind, ...payload, ...store });
+    if (noAxiom) {
+        console.log({ kind, ...payload, ...store });
         return;
     }
 
