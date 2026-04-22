@@ -1,16 +1,17 @@
-import { Await, data, useFetcher, useLoaderData, type ActionFunctionArgs } from "react-router";
-import getCascading, { type CascadingRequest } from "~/lib/portal/get-cascading";
+import { Await } from "react-router";
 import Header from "~/components/index/Header";
 import Footer from "~/components/index/Footer";
 import Form from "~/components/index/Form";
 import Schedule from "~/components/index/schedule/Schedule";
 import headPortal from "~/lib/portal/head";
 import type { HeadersFunction, LoaderFunctionArgs, MetaFunction } from "react-router";
-import getInit from "~/lib/portal/get-init";
 import { Suspense } from "react";
-import { getIntlayer, validatePrefix } from "intlayer";
+import { getIntlayer } from "intlayer";
 import LocaleSwitcher from "~/components/index/LocaleSwitcher";
-import { errorBoundary } from "~/lib/portal";
+import { errorBoundary, type Req } from "~/lib/portal";
+import type { Route } from "./+types/($locale)._index";
+import fetchTimetableData from "~/lib/portal/fetch-timetable-data";
+import Error from "~/components/index/Error";
 
 export const headers: HeadersFunction = () => ({
     "Cache-Control": "public, max-age=300, s-maxage=300, stale-while-revalidate=3600",
@@ -25,50 +26,31 @@ export const meta: MetaFunction = ({ params }) => {
     ];
 };
 
-export async function loader({ request, params: urlPathParams }: LoaderFunctionArgs) {
-    const { isValid } = validatePrefix(urlPathParams.locale);
-    if (!isValid) {
-        throw data("Locale not supported", { status: 404 });
-    }
-  
+export async function loader({ request }: LoaderFunctionArgs) {
     const params = new URL(request.url).searchParams;
-    const req = Object.fromEntries(params) as Partial<CascadingRequest>;
-    const runBootstrap = !!req["facultyId"] && !!req["course"];
+    const req = Object.fromEntries(params) as Req;
 
     return {
-        faculties: errorBoundary(() => getInit()),
         head: headPortal(),
-        bootstrap: runBootstrap ? errorBoundary(() => getCascading(req as CascadingRequest)) : undefined,
+        data: errorBoundary(() => fetchTimetableData(req))
     };
 };
 
-export async function action({ request }: ActionFunctionArgs) {
-    const formData = await request.formData();
-    const req = Object.fromEntries(formData) as Partial<CascadingRequest>;
-
-    if (!req.facultyId || !req.course) {
-        return null;
-    }
-
-    return errorBoundary(() => getCascading(req as CascadingRequest));
-}
-
-export default function Home() {
-    const { faculties, head, bootstrap } = useLoaderData<typeof loader>();
-    const fetcher = useFetcher<typeof action>();
-
+export default function Home({ loaderData: { data, head } }: Route.ComponentProps) {
     return <main className="p-12 flex flex-col items-center gap-10">
         <Header head={head} />
 
-        <Form faculties={faculties} fetcher={fetcher} bootstrap={bootstrap} />
+        <Form data={data} />
+
+        <Error data={data} />
 
         <Suspense fallback={<Footer />}>
-            <Await resolve={bootstrap}>
-                {resolved => {
-                    const activeSchedule = fetcher.data?.result?.schedule || resolved?.result?.schedule;
-
-                    return activeSchedule ? <Schedule schedule={activeSchedule} /> : <Footer />;
-                }}
+            <Await resolve={data}>
+                {resolved => 
+                    Object.keys(resolved.result?.schedule || {}).length > 0 
+                        ? <Schedule schedule={resolved.result?.schedule} /> 
+                        : <Footer />
+                }
             </Await>
         </Suspense>
 

@@ -1,27 +1,33 @@
-import * as cheerio from "cheerio";
+import type { Schedule } from "./parse-schedule";
 import type { ErrorCodes } from "./portal-error";
 import PortalError from "./portal-error";
 
 export const BASE_URL = "https://portal.zp.edu.ua";
 export const TIME_TABLE_URL = `${BASE_URL}/time-table/student?type=1`;
 
-export function getOptions($: cheerio.CheerioAPI, selector: string): [number, string][] {
-    return $(selector).children("option").map((_, el) => {
-        const element = $(el);
+export interface Req {
+    facultyId?: string,
+    course?: string,
+    groupId?: string
+    studentId?: string
+}
 
-        const id = parseInt(element.attr("value") || "", 10);
-        const name = element.text().trim();
+export interface Res {
+    faculties: [number, string][],
+    courses: [number, string][],
+    groups: [number, string][],
+    students: [number, string][],
+    schedule: Schedule,
+}
 
-        if (Number.isNaN(id)) { return null; }
-
-        return [[ id, name ]]; 
-    })
-        .get()
-        .filter(el => el !== null) as [number, string][]; 
+export interface Csrf {
+    metaCsrfToken: string,
+    csrfToken: string,
+    cookies: string,
 }
 
 export type Result<T> = {
-    errCode?: undefined,
+    errCode?: ErrorCodes,
     result: T,
 } | {
     errCode: ErrorCodes,

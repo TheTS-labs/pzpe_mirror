@@ -1,96 +1,81 @@
-import { Spinner } from "../ui/spinner";
-import CourseSelector from "./CourseSelector";
-import FacultySelector from "./FacultySelector";
+import type { Res, Result } from "~/lib/portal";
 import Selector from "./Selector";
-import { Await, useSearchParams, type FetcherWithComponents } from "react-router";
-import { Suspense, useCallback } from "react";
-import type { Faculties } from "~/lib/portal/get-init";
-import type { CascadingResponse } from "~/lib/portal/get-cascading";
 import { useIntlayer } from "react-intlayer";
-import type { Result } from "~/lib/portal";
+import { useNavigation, useSearchParams } from "react-router";
+import { useCallback } from "react";
+import { Spinner } from "~/components/ui/spinner";
 
 export interface FormProps {
-    fetcher: FetcherWithComponents<Result<CascadingResponse> | null>,
-    faculties: Promise<Result<Faculties>>,
-    bootstrap: Promise<Result<CascadingResponse>> | undefined,
+    data: Promise<Result<Res>>,
 }
 
-export default function Form(props: FormProps) {
+export default function Form({ data }: FormProps) {
     const { placeholders } = useIntlayer("form");
     const [searchParams, setSearchParams] = useSearchParams();
+    const navigation = useNavigation();
 
-    const onFormChange = useCallback<React.ChangeEventHandler<HTMLFormElement>>((e) => {
+    const isSubmitting = navigation.state !== "idle";
+
+    const onFormChange = useCallback<React.ChangeEventHandler<HTMLFormElement>>(e => {
         const targetName = e.target.name;
-        const formData = new FormData(e.currentTarget!);
-    
-        if (!formData.get("facultyId") || !formData.get("course")) { 
-            return; 
-        }
-    
-        if (targetName === "facultyId" || targetName === "course") {
+        const formData = new FormData(e.currentTarget);
+
+        if (targetName === "facultyId") {
+            formData.delete("course");
+            formData.delete("groupId");
+            formData.delete("studentId");
+        } else if (targetName === "course") {
             formData.delete("groupId");
             formData.delete("studentId");
         } else if (targetName === "groupId") {
             formData.delete("studentId");
         }
 
-        setSearchParams({
-            facultyId: formData.get("facultyId")!.toString(),
-            course: formData.get("course")!.toString(),
-            ...(formData.get("groupId") ? { groupId: formData.get("groupId")?.toString() } : {}),
-            ...(formData.get("studentId") ? { studentId: formData.get("studentId")?.toString() } : {}),
-        }, { replace: true });
-    
-        props.fetcher.submit(formData, { method: "post" });
-    }, [props.fetcher, setSearchParams]);
+        setSearchParams(Object.fromEntries(formData) as Record<string, string>, { replace: true });
+    }, [setSearchParams]);
 
-    const formData = props.fetcher.formData;
-    const isSubmitting = props.fetcher.state !== "idle";
+    return <form
+        className="flex flex-col md:flex-row gap-5 items-center justify-items-center md:max-w-prose w-full"
+        onChange={onFormChange}
+    >
+        <Selector
+            data={data}
+            dataKey="faculties"
+            name="facultyId"
+            placeholder={placeholders.faculty}
+            defaultValue={searchParams.get("facultyId") || undefined}
+        />
 
-    const isLoadingGroups = isSubmitting && !formData?.has("groupId");
-    const isLoadingStudents = isSubmitting && formData?.has("groupId") && !formData?.has("studentId");
-    const isLoadingSchedule = isSubmitting && formData?.has("groupId") && formData?.has("studentId");
+        <Selector
+            key={`course-${searchParams.get("facultyId")}`}
 
-    const renderSelectors = (bootstrapData?: Result<CascadingResponse>) => {
-        const activeData = props.fetcher.data || bootstrapData;
+            data={data}
+            dataKey="courses"
+            name="course"
+            placeholder={placeholders.course}
+            defaultValue={searchParams.get("course") || undefined}
+        />
 
-        return <>
-            <Selector
-                name="groupId"
-                data={activeData?.result?.groups}
-                loading={isLoadingGroups}
-                placeholder={placeholders.group}
-                defaultValue={searchParams.get("groupId") || undefined}
-            />
-            <Selector
-                name="studentId"
-                data={activeData?.result?.students}
-                loading={isLoadingStudents}
-                placeholder={placeholders.student}
-                disabled={isLoadingGroups}
-                defaultValue={searchParams.get("studentId") || undefined}
-            />
-        </>;
-    };
+        <Selector
+            key={`group-${searchParams.get("course")}`}
+        
+            data={data}
+            dataKey="groups"
+            name="groupId"
+            placeholder={placeholders.group}
+            defaultValue={searchParams.get("groupId") || undefined}
+        />
 
-    return (
-        <form
-            className="flex flex-col md:flex-row gap-5 items-center justify-items-center md:max-w-prose w-full"
-            onChange={onFormChange}
-        >
-            <FacultySelector faculties={props.faculties} defaultValue={searchParams.get("facultyId") || undefined} />
-            <CourseSelector defaultValue={searchParams.get("course") || undefined} />
-                
-            <Suspense fallback={<>
-                {renderSelectors()}
-                <Spinner className="flex-none size-6" />
-            </>}>
-                <Await resolve={props.bootstrap}>
-                    {resolved => renderSelectors(resolved)}
-                </Await>
-            </Suspense>
+        <Selector
+            key={`student-${searchParams.get("groupId")}`}
+        
+            data={data}
+            dataKey="students"
+            name="studentId"
+            placeholder={placeholders.student}
+            defaultValue={searchParams.get("studentId") || undefined}
+        />
 
-            {isLoadingSchedule && <Spinner className="flex-none size-6" />}
-        </form>
-    );
+        {isSubmitting && <Spinner className="flex-none size-6" />}
+    </form>
 }
