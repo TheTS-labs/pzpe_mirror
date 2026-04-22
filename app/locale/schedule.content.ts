@@ -22,6 +22,11 @@ const content = {
             "en-US": "tomorrow",
             "uk-UA": "завтра",
         }),
+
+        titleDateFormat: t({
+            "en-US": "ddd",
+            "uk-UA": "dd",
+        }),
     },
 } satisfies Dictionary;
 
