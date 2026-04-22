@@ -1,4 +1,13 @@
-.react-router
-build
-node_modules
-README.md
+.DS_Store
+/node_modules/
+
+# React Router
+/.react-router/
+/build/
+
+.env*
+.vercel
+
+# Intlayer
+.intlayer
+.git

@@ -15,6 +15,7 @@ import { RouteSpeedInsights } from "./components/RouteSpeedInsights";
 import { getLocaleFromPath } from "intlayer";
 import { IntlayerProvider } from "react-intlayer";
 import { DayjsLocale } from "./components/DayjsLocale";
+import config from "../intlayer.config";
 
 export const links: Route.LinksFunction = () => [
     { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -31,12 +32,15 @@ export const links: Route.LinksFunction = () => [
 
 export async function loader({ request }: Route.LoaderArgs) {
     const locale = getLocaleFromPath(request.url);
+    const isVercel = process.env.VERCEL === "1";
 
-    return { locale };
+    return { locale, isVercel };
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-    const { locale } = useLoaderData<typeof loader>();
+    const loaderData = useLoaderData<typeof loader>();
+    const locale = loaderData?.locale ?? config.internationalization?.defaultLocale;
+    const isVercel = loaderData?.isVercel ?? false;
 
     return (
         <html lang={locale} suppressHydrationWarning>
@@ -53,7 +57,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 </IntlayerProvider>
                 <ScrollRestoration />
                 <Scripts />
-                <RouteSpeedInsights />
+                {isVercel && <RouteSpeedInsights />}
             </body>
         </html>
     );

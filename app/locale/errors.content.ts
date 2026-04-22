@@ -1,5 +1,5 @@
 import { t, type Dictionary } from "intlayer";
-import type { ErrorCodes } from "~/lib/portal/portal-error";
+import type { ErrorCodes } from "~/lib/portal/portal-error.server";
 
 const content = {
     key: "errors",

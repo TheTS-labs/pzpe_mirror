@@ -12,51 +12,107 @@
 
 * **Modern UI**: Built with a clean, responsive interface using Tailwind CSS and Shadcn components.
 * **Downtime Protection**: Utilizes Redis for request caching, mitigating issues when the upstream portal is unavailable.
-* **Edge Powered**: Serverless-friendly architecture ready to deploy on Vercel
+* **Edge Ready**: Serverless-friendly architecture ready to deploy on Vercel.
+* **Docker Ready:** Fully containerized with `Dockerfile` and `docker-compose.yml`.
 
 ## Tech Stack
 
-* **Framework**: [React Router 7](https://reactrouter.com/) (formerly Remix).
-* **Runtime**: [Vercel](https://vercel.com/).
+* **Framework**: [React Router 7](https://reactrouter.com/).
+* **Runtime**: [Vercel](https://vercel.com/) or Docker & Docker Compose.
 * **Styling**: [Tailwind CSS](https://tailwindcss.com/) & [Shadcn UI](https://ui.shadcn.com/).
+* **i18n:** [Intlayer](https://intlayer.org/)
 * **Data Processing**: [Cheerio.JS](https://cheerio.js.org/) for DOM parsing and [Day.js](https://day.js.org/) for time management.
-* **Storage**: [Upstash Redis](https://upstash.com/docs/redis/overall/getstarted/) for caching schedule data.
+* **Storage**: [Upstash Redis](https://upstash.com/docs/redis/overall/getstarted/) for caching.
 
 ## Getting Started
 
 ### Prerequisites
 
-* Node.js (latest LTS recommended)
-* npm or yarn
-* A Cloudflare account (for deployment)
+Ensure you have the following installed:
 
-### Installation
+* [Node.js](https://nodejs.org/) (latest LTS is recommended)
+* [npm](https://www.npmjs.com/)
+* [Docker](https://www.docker.com/) (optional, for containerized deployment)
+* [Vercel](https://vercel.com/) account (for edge deployment)
 
-1. **Clone the repository:**
+### Local Development
 
-    ```bash
-    git clone https://github.com/TheTS-labs/pzpe_mirror.git
-    cd pzpe_mirror
-    ```
-
-2. **Install dependencies:**
+1. **Install dependencies:**
 
     ```bash
     npm install
     ```
 
-### Development
+2. **Create .env file:**
 
-Run the development server locally:
+    ```bash
+    cp .env.example .env
+    ```
 
-```bash
-npm run dev
-```
+3. **Start Redis server and Serverless API:**
 
-### Deployment
+    ```bash
+    docker compose up redis serverless-redis -d
+    ```
 
-Deploy the project to Vercel:
+4. **Start the development server:**
 
-```bash
-npx vercel --prod
-```
+    ```bash
+    npm run dev
+    ```
+
+    The application will be available at `http://localhost:5173` (or the port specified by Vite).
+
+## Deployment
+
+### Using Docker (Recommended)
+
+The easiest way to deploy the application in production is using Docker Compose.
+
+1. Build and start the container in detached mode:
+
+    ```bash
+    docker compose up -d --build
+    ```
+
+### Manual Build
+
+To build the application for production without Docker:
+
+1. Build the project:
+
+    ```bash
+    npm run build
+    ```
+
+2. Start the production server:
+
+    ```bash
+    npm run start
+    ```
+
+### Using Vercel
+
+Deploy the application to Vercel.
+
+1. **Connect Redis:**
+
+    Add [Upstash Redis](https://vercel.com/marketplace/upstash) instance to your project.
+
+2. **Deploy the application:**
+
+    ```bash
+    npx vercel --prod
+    ```
+
+### Axiom
+
+When deploying the app, regardless of the deployment method, you can choose to record logs to [Axiom](https://axiom.co).
+
+To enable, make sure you have `AXIOM_DATASET_NAME` and `AXIOM_TOKEN` environment variables set.
+
+[Learn how you can add environment variables on Vercel](https://vercel.com/docs/environment-variables)
+
+## License
+
+Please refer to the `LICENSE` file in the root directory for more information.

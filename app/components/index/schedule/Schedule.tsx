@@ -1,4 +1,4 @@
-import type { Lesson, Schedule } from "~/lib/portal/parse-schedule";
+import type { Lesson, Schedule } from "~/lib/portal/parse-schedule.server";
 import { Accordion, AccordionContent, AccordionItem } from "../../ui/accordion";
 import { Separator } from "~/components/ui/separator";
 import React, { useEffect, useMemo, useState } from "react";

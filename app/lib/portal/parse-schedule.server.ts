@@ -1,5 +1,6 @@
 import sanitizeHtml from "sanitize-html";
-import PortalError from "./portal-error";
+import PortalError from "./portal-error.server";
+import { EVENTS_REGEX } from "./constants.server";
 
 export interface Lesson<T = string> {
     subject: {
@@ -87,8 +88,7 @@ interface Event {
 }
 
 function getEventsVariable(html: string): { [key: string]: Event } {
-    const regex = /var events = ({[\s\S]*?});/;
-    const match = html.match(regex);
+    const match = html.match(EVENTS_REGEX);
 
     if (!match) {
         throw new PortalError("schedule_parsing_failed");

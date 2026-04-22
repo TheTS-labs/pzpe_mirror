@@ -12,3 +12,5 @@ export const INPUT_CSRF_SELECTOR = "input[name=\"_csrf-frontend\"]";
 export const COURSE_SELECTOR = "#timetableform-course";
 export const GROUP_SELECTOR = "#timetableform-groupid";
 export const STUDENT_SELECTOR = "#timetableform-studentid";
+
+export const EVENTS_REGEX = /var events = ({[\s\S]*?});/;
