@@ -1,18 +1,22 @@
 import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from "../ui/item";
-import { History } from "lucide-react";
+import { History, X } from "lucide-react";
 import { Button } from "../ui/button";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useIntlayer } from "react-intlayer";
+import { Spinner } from "../ui/spinner";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(relativeTime);
 
 export interface MetadataProps {
-    createdAt?: number
+    createdAt?: number,
+    onRefresh: () => void,
+    loading?: boolean,
+    error?: boolean,
 }
 
 export default function Metadata(props: MetadataProps) {
@@ -26,7 +30,15 @@ export default function Metadata(props: MetadataProps) {
             <ItemTitle>{cachedAt} {dayjs(props.createdAt).fromNow()}</ItemTitle>
         </ItemContent>
         <ItemActions>
-            <Button size="sm" variant="ghost">
+            <Button
+                size="sm"
+                variant="ghost"
+                onClick={props.onRefresh}
+                disabled={props.loading || props.error}
+                className={props.error ? "text-red-400" : ""}
+            >
+                {props.loading && <Spinner />}
+                {props.error && <X />}
                 {refresh}
             </Button>
         </ItemActions>

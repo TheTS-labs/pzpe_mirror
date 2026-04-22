@@ -18,8 +18,8 @@ interface CachePayload<T> {
     metadata: Metadata;
 }
 
-export async function manageCache<T>(key: string, ex: number, revalidate: () => Promise<T>): Promise<Payload<T>> {
-    const payload = await redis.get<CachePayload<T>>(key);
+export async function manageCache<T>(key: string, ex: number, revalidate: () => Promise<T>, ignoreCache = false): Promise<Payload<T>> {
+    const payload = ignoreCache ? null : await redis.get<CachePayload<T>>(key);
     if (!payload || !payload.value || !payload.metadata) {
         const value = await revalidate();
 

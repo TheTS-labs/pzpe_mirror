@@ -1,4 +1,4 @@
-import { Await } from "react-router";
+import { Await, useFetcher } from "react-router";
 import Header from "~/components/index/Header";
 import Footer from "~/components/index/Footer";
 import Form from "~/components/index/Form";
@@ -37,7 +37,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
     };
 };
 
+export async function action({ request }: Route.ActionArgs) {
+    const params = new URL(request.url).searchParams;
+    const req = Object.fromEntries(params) as Req;
+
+    return errorBoundary(() => fetchTimetableData(req, true));
+}
+
 export default function Home({ loaderData: { data, head } }: Route.ComponentProps) {
+    const fetcher = useFetcher<typeof action>();
+
     return <main className="justify-center p-6 pt-12 flex flex-col items-center gap-10 w-full md:max-w-prose mx-auto">
         <Header head={head} />
 
@@ -51,7 +60,13 @@ export default function Home({ loaderData: { data, head } }: Route.ComponentProp
                     {Object.keys(resolved.result?.schedule || {}).length > 0 
                         ? <>
                             <Schedule schedule={resolved.result?.schedule} />
-                            {resolved.result?.cacheCreatedAt && <Metadata createdAt={resolved.result?.cacheCreatedAt} />}
+                            {resolved.result?.cacheCreatedAt && <Metadata
+                                error={fetcher.data?.errCode !== undefined}
+                                loading={fetcher.state !== "idle"}
+
+                                onRefresh={() => fetcher.submit({}, { method: "POST" })}
+                                createdAt={resolved.result?.cacheCreatedAt}
+                            />}
                         </>
                         : <Footer />}
                 </div>}
