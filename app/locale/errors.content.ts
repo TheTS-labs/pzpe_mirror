@@ -14,8 +14,8 @@ const content = {
                 "uk-UA": "Невдалий запит до джерела. Так може статися, якщо немає кешованих даних, а портал не працює, і в цьому випадку все, що ви можете зробити, це спробувати ще раз пізніше, коли портал знову запрацює",
             }),
             schedule_parsing_failed: t({
-                "en-US": "Could not show schedule. Most probably you tried to request a student that doesn't have schedule (namely part-time one)",
-                "uk-UA": "Не вдається отримати розклад. Скоріш за все ви намагаєтесь запросити студента, який не має розкладу (заочні студенти наприклад)",
+                "en-US": "Could not show schedule. Most probably you tried to request a student that doesn't have schedule (namely a part-time student)",
+                "uk-UA": "Не вдається отримати розклад. Скоріш за все ви намагаєтесь запросити студента, який не має розкладу (наприклад студент заочної форми освіти)",
             }),
         } satisfies Record<ErrorCodes, unknown>,
 

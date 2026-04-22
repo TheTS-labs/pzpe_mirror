@@ -22,6 +22,21 @@ const content = {
             "en-US": "tomorrow",
             "uk-UA": "завтра",
         }),
+
+        titleDateFormat: t({
+            "en-US": "ddd",
+            "uk-UA": "dd",
+        }),
+
+        cachedAt: t({
+            "en-US": "Updated",
+            "uk-UA": "Оновлено",
+        }),
+
+        refresh: t({
+            "en-US": "Refresh",
+            "uk-UA": "Оновити",
+        }),
     },
 } satisfies Dictionary;
 

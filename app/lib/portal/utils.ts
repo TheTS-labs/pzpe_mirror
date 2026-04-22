@@ -13,7 +13,7 @@ export function getOptions($: cheerio.CheerioAPI, selector: string): [number, st
         return [[ id, name ]]; 
     })
         .get()
-        .filter(el => el !== null) as [number, string][]; 
+        .filter(el => el !== null) as [number, string][];
 }
 
 export function createCookieHeader(setCookie: string[]) {
@@ -47,5 +47,7 @@ export function createRequestOptions(req: Req, csrf?: Csrf): RequestInit {
             "X-CSRF-Token": csrf.metaCsrfToken,
             "Cookie": csrf.cookies,
         },
+
+        signal: AbortSignal.timeout(3000),
     };
 }

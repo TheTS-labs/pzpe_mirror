@@ -6,7 +6,7 @@ import { useIntlayer } from "react-intlayer";
 export default function Footer() {
     const i18n = useIntlayer("footer");
 
-    return <Accordion type="single" collapsible className="w-full max-w-2xl mx-auto px-4">
+    return <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="item-0">
             <AccordionTrigger>{i18n.item_zero}</AccordionTrigger>
             <AccordionContent className="pl-4">

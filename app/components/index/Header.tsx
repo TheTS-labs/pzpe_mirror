@@ -26,7 +26,7 @@ export default function Header({ head }: HeaderProps) {
             <Status head={head} /> Mirror
         </h1>
 
-        <p className="text-center max-w-prose text-neutral-500">
+        <p className="text-center text-neutral-500">
             {description}
         </p>
     </div>;

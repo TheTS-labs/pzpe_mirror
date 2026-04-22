@@ -59,7 +59,7 @@ export default function Schedule(props: ScheduleProps) {
         ]] as [Dayjs, Lesson<Dayjs>[]][];
     }), [props.schedule, today]);
 
-    return <div className="flex flex-col gap-5 w-full max-w-4xl md:max-w-2xl mx-auto">
+    return <div className="flex flex-col gap-5 w-full mx-auto">
         {schedule && schedule.map(([date, lessons]) => <React.Fragment key={date.toString()}>
             <div>
                 <Title date={date} />

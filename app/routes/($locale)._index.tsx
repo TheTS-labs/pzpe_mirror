@@ -1,4 +1,4 @@
-import { Await } from "react-router";
+import { Await, useFetcher } from "react-router";
 import Header from "~/components/index/Header";
 import Footer from "~/components/index/Footer";
 import Form from "~/components/index/Form";
@@ -12,6 +12,7 @@ import { errorBoundary, type Req } from "~/lib/portal";
 import type { Route } from "./+types/($locale)._index";
 import fetchTimetableData from "~/lib/portal/fetch-timetable-data";
 import Error from "~/components/index/Error";
+import Metadata from "~/components/index/Metadata";
 
 export const headers: HeadersFunction = () => ({
     "Cache-Control": "public, max-age=300, s-maxage=300, stale-while-revalidate=3600",
@@ -36,8 +37,17 @@ export async function loader({ request }: LoaderFunctionArgs) {
     };
 };
 
+export async function action({ request }: Route.ActionArgs) {
+    const params = new URL(request.url).searchParams;
+    const req = Object.fromEntries(params) as Req;
+
+    return errorBoundary(() => fetchTimetableData(req, true));
+}
+
 export default function Home({ loaderData: { data, head } }: Route.ComponentProps) {
-    return <main className="p-12 flex flex-col items-center gap-10">
+    const fetcher = useFetcher<typeof action>();
+
+    return <main className="justify-center p-6 pt-12 flex flex-col items-center gap-10 w-full md:max-w-prose mx-auto">
         <Header head={head} />
 
         <Form data={data} />
@@ -46,11 +56,20 @@ export default function Home({ loaderData: { data, head } }: Route.ComponentProp
 
         <Suspense fallback={<Footer />}>
             <Await resolve={data}>
-                {resolved => 
-                    Object.keys(resolved.result?.schedule || {}).length > 0 
-                        ? <Schedule schedule={resolved.result?.schedule} /> 
-                        : <Footer />
-                }
+                {resolved => <div className="w-full md:max-w-2xl">
+                    {Object.keys(resolved.result?.schedule || {}).length > 0 
+                        ? <>
+                            <Schedule schedule={resolved.result?.schedule} />
+                            {resolved.result?.cacheCreatedAt && <Metadata
+                                error={fetcher.data?.errCode !== undefined}
+                                loading={fetcher.state !== "idle"}
+
+                                onRefresh={() => fetcher.submit({}, { method: "POST" })}
+                                createdAt={resolved.result?.cacheCreatedAt}
+                            />}
+                        </>
+                        : <Footer />}
+                </div>}
             </Await>
         </Suspense>
 

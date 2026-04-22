@@ -6,12 +6,12 @@ import { Select as SelectPrimitive } from "radix-ui"
 
 export type SelectorProps = {
     data: Promise<Result<Res>>,
-    dataKey: Exclude<keyof Res, "schedule">,
+    dataKey: Exclude<keyof Res, "schedule" | "cacheCreatedAt">,
     placeholder?: string,
 } & React.ComponentProps<typeof SelectPrimitive.Root>;
 
 function Trigger(props: { loading?: boolean, placeholder?: string }) {
-    return <SelectTrigger className="w-full md:grow" loading={props.loading}>
+    return <SelectTrigger className="w-full" loading={props.loading}>
         <SelectValue placeholder={props.placeholder} />
     </SelectTrigger>
 }
@@ -32,10 +32,7 @@ function Resolved(props: SelectorProps) {
     return <Select {...props}>
         <Trigger placeholder={props.placeholder} />
 
-        <SelectContent 
-            position="popper" 
-            className="w-[var(--radix-select-trigger-width)] min-w-[200px] max-h-[300px]"
-        >
+        <SelectContent position="popper" className="max-w-[95vw]">
             {resolved.result[props.dataKey].map(([key, value]) => (
                 <SelectItem 
                     key={key} 
@@ -50,9 +47,11 @@ function Resolved(props: SelectorProps) {
 }
 
 export default function Selector(props: SelectorProps) {
-    return <Suspense fallback={<Fallback placeholder={props.placeholder} />}>
-        <Await resolve={props.data}>
-            <Resolved {...props} />
-        </Await>
-    </Suspense>;
+    return <div className="flex-1 min-w-0 w-full">
+        <Suspense fallback={<Fallback placeholder={props.placeholder} />}>
+            <Await resolve={props.data}>
+                <Resolved {...props} />
+            </Await>
+        </Suspense>
+    </div>;
 }
