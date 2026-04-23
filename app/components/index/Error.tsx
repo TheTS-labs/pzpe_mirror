@@ -36,5 +36,5 @@ export default function Error(props: ErrorProps) {
                 </ItemActions>
             </Item>}
         </Await>
-    </Suspense>
+    </Suspense>;
 }

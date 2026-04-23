@@ -3,8 +3,8 @@ import { useIntlayer } from "react-intlayer";
 import { Await } from "react-router";
 
 export const COLOR_UNKNOWN = "text-neutral-500";
-export const COLOR_ONLINE = "text-green-500"
-export const COLOR_OFFLINE = "text-red-500"
+export const COLOR_ONLINE = "text-green-500";
+export const COLOR_OFFLINE = "text-red-500";
 
 export interface HeaderProps {
     head: Promise<boolean>
@@ -15,7 +15,7 @@ function Status({ head }: HeaderProps) {
         <Await resolve={head} errorElement={<span className={COLOR_OFFLINE}>PZPE</span>}>
             {resolved => <span className={resolved ? COLOR_ONLINE : COLOR_OFFLINE}>PZPE</span>}
         </Await>
-    </Suspense>
+    </Suspense>;
 }
 
 export default function Header({ head }: HeaderProps) {

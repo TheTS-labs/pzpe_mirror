@@ -35,7 +35,7 @@ const content = {
             "en-US": "Unable to load data",
             "uk-UA": "Не вдалося завантажити дані",
         }),
-    }
+    },
 } satisfies Dictionary;
 
 export default content;

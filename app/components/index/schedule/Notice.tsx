@@ -1,3 +1,5 @@
+/* eslint-disable stylistic/comma-dangle */
+
 const URL_REGEX = /(https?:\/\/[^\s]+)/g;
 
 export default function Notice({ text }: { text: string }) {

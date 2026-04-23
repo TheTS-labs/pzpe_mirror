@@ -41,8 +41,8 @@ export default function parseSchedule(html: string) {
         classroom: event.classroom.replace("ауд. ", ""),
         notice: sanitizeHtml(event.notice !== "" ? event.notice : event.info, {
             allowedTags: [ "br" ],
-            allowedAttributes: { }
-        }).replaceAll("<br />", "\n")
+            allowedAttributes: { },
+        }).replaceAll("<br />", "\n"),
     }));
 
     return cleaned.reduce((acc, item) => {

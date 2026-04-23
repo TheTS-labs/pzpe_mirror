@@ -77,5 +77,5 @@ export default function Form({ data }: FormProps) {
         />
 
         {isSubmitting && <Spinner className="flex-none size-6" />}
-    </form>
+    </form>;
 }

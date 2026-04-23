@@ -35,7 +35,7 @@ export const loader = withLogger(async ({ request }: LoaderFunctionArgs) => {
 
     return {
         head: headPortal(),
-        data: errorBoundary(() => fetchTimetableData(req))
+        data: errorBoundary(() => fetchTimetableData(req)),
     };
 });
 

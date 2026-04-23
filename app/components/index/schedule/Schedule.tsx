@@ -54,8 +54,8 @@ export default function Schedule(props: ScheduleProps) {
                 time: {
                     start: dayjs.tz(`${date} ${lesson.time.start}`, "DD.MM.YYYY HH:mm", "Europe/Kyiv"),
                     end: dayjs.tz(`${date} ${lesson.time.end}`, "DD.MM.YYYY HH:mm", "Europe/Kyiv"),
-                }
-            }))
+                },
+            })),
         ]] as [Dayjs, Lesson<Dayjs>[]][];
     }), [props.schedule, today]);
 
@@ -85,5 +85,5 @@ export default function Schedule(props: ScheduleProps) {
 
             <Separator />
         </React.Fragment>)}
-    </div>
+    </div>;
 }

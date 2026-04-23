@@ -96,7 +96,7 @@ const config: IntlayerConfig = {
          * Indicates if the build should check TypeScript types
          */
         checkTypes: false,
-    }
+    },
 };
 
 export default config;

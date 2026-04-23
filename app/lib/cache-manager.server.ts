@@ -57,8 +57,8 @@ async function writeCache(key: string, value: unknown, ex: number) {
         value,
         metadata: {
             createdAt,
-            staleAt: createdAt + (ex / 2) * 1000
-        }
+            staleAt: createdAt + (ex / 2) * 1000,
+        },
     };
 
     await redis.set(key, payload, { ex });
