@@ -26,7 +26,7 @@ export default async function fetchTimetableData(req: Req, ignoreCache = false):
         .then(({ value, metadata }) => ({
             faculties,
             ...value,
-            cacheCreatedAt: ignoreCache ? Date.now() : metadata?.createdAt
+            cacheCreatedAt: ignoreCache ? Date.now() : metadata?.createdAt,
         }));
 }
 
@@ -42,7 +42,7 @@ async function revalidate(req: Req, csrf: Csrf): Promise<Omit<Res, "faculties">>
         groups: req.course ? getOptions($, GROUP_SELECTOR) : [],
         students: (req.course && req.groupId) ? getOptions($, STUDENT_SELECTOR) : [],
         schedule: (req.course && req.groupId && req.studentId) ? parseSchedule(html) : {},
-    }
+    };
 }
 
 async function revalidateBase(): Promise<Pick<Res, "faculties"> & Csrf> {

@@ -5,10 +5,11 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 import { defineConfig } from "eslint/config";
 import unicorn from "eslint-plugin-unicorn";
+import stylistic from "@stylistic/eslint-plugin";
 
 export default defineConfig([
     { 
-        ignores: ["dist", "build", ".react-router"] 
+        ignores: ["dist", "build", ".react-router"], 
     },
     {
         extends: [js.configs.recommended, ...tseslint.configs.recommended],
@@ -24,6 +25,7 @@ export default defineConfig([
             "react-hooks": reactHooks as object,
             "react-refresh": reactRefresh,
             "unicorn": unicorn,
+            "stylistic": stylistic,
         },
         rules: {
             ...reactHooks.configs.recommended.rules,
@@ -37,7 +39,7 @@ export default defineConfig([
                         "links",
                         "meta",
                         "headers",
-                    ]
+                    ],
                 },
             ],
             "@typescript-eslint/no-unused-vars": [
@@ -45,8 +47,8 @@ export default defineConfig([
                 { 
                     "argsIgnorePattern": "^_",
                     "varsIgnorePattern": "^_",
-                    "caughtErrorsIgnorePattern": "^_"
-                }
+                    "caughtErrorsIgnorePattern": "^_",
+                },
             ],
 
             "quotes": ["error", "double"],
@@ -64,8 +66,8 @@ export default defineConfig([
                     },
                     ignore: [
                         "vite\\.config\\.ts",
-                        "eslint\\.config\\.ts"
-                    ]
+                        "eslint\\.config\\.ts",
+                    ],
                 },
             ],
 
@@ -79,6 +81,10 @@ export default defineConfig([
                 { selector: "parameter", format: ["camelCase"], leadingUnderscore: "allow" },
                 { selector: "objectLiteralProperty", format: null },
             ],
+
+            "stylistic/semi": ["warn", "always"],
+
+            "stylistic/comma-dangle": ["error", "always-multiline"],
         },
-    }
+    },
 ]);

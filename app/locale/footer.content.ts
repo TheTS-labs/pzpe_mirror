@@ -83,7 +83,7 @@ const content = {
                 "uk-UA": "Звичайно!! Донати завжди вітаються:",
             }),
         },
-    }
+    },
 } satisfies Dictionary;
 
 export default content;

@@ -12,7 +12,7 @@ export async function errorBoundary<Ret>(
                 return { errCode: err.errCode }; 
             }
 
-            log("error", { where: "errorBoundary", err })
+            log("error", { where: "errorBoundary", err });
 
             throw err; 
         });

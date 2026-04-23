@@ -15,7 +15,7 @@ function LocaleLink(props: { locale: LocalesValues, name: string }) {
         className={currentLocale == props.locale ? "text-indigo-500 font-bold" : ""}
     >
         {props.name}
-    </Link>
+    </Link>;
 }
 
 export default function LocaleSwitcher() {

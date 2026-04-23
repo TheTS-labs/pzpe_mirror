@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { Await, useAsyncValue } from "react-router";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import type { Res, Result } from "~/lib/portal";
-import { Select as SelectPrimitive } from "radix-ui"
+import { Select as SelectPrimitive } from "radix-ui";
 
 export type SelectorProps = {
     data: Promise<Result<Res>>,
@@ -13,13 +13,13 @@ export type SelectorProps = {
 function Trigger(props: { loading?: boolean, placeholder?: string }) {
     return <SelectTrigger className="w-full" loading={props.loading}>
         <SelectValue placeholder={props.placeholder} />
-    </SelectTrigger>
+    </SelectTrigger>;
 }
 
 function Fallback(props: Pick<SelectorProps, "placeholder">) {
     return <Select disabled>
         <Trigger {...props} />
-    </Select>
+    </Select>;
 }
 
 function Resolved(props: SelectorProps) {

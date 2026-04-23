@@ -24,13 +24,12 @@ export type LogKind = "core" | "cache" | "parsing" | "error";
 
 export default function log(kind: LogKind, payload: object) {
     const store = logContext.getStore();
+    const event = { kind, ...payload, ...store };
 
     if (noAxiom) {
-        console.log({ kind, ...payload, ...store });
+        console.log(event);
         return;
     }
 
-    waitUntil((async () => {
-        await axiom.ingest(DATASET, [{ kind, ...payload, ...store }]);
-    })());
+    waitUntil(axiom.ingest(DATASET, [event]));
 }
