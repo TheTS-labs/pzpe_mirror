@@ -9,10 +9,15 @@ const axiom = new AxiomWithoutBatching({
     token: process.env.AXIOM_TOKEN!,
 });
 
-const logContext = new AsyncLocalStorage<{ reqId: string }>();
+const logContext = new AsyncLocalStorage<{ reqId: string, ua?: string }>();
 
-export function withLogger<T, A>(handler: (args: A) => Promise<T>) {
-    return async (args: A) => logContext.run({ reqId: crypto.randomUUID() }, () => handler(args));
+export function withLogger<T, A extends { request: Request }>(handler: (args: A) => Promise<T>) {
+    return async (args: A) => {
+        const ua = args.request.headers.get("User-Agent") || undefined;
+        const reqId = args.request.headers.get("x-vercel-id") || crypto.randomUUID();
+
+        return logContext.run({ reqId, ua }, () => handler(args));
+    };
 }
 
 export type LogKind = "core" | "cache" | "parsing" | "error";
